@@ -25,7 +25,7 @@
       </b-form-group>
     </div>
     {{ settingsData }}
-    <b-button variant="primary">Save</b-button>
+    <b-button @click="saveData" variant="primary">Save</b-button>
   </div>
 </template>
 <!--
@@ -46,6 +46,11 @@ export default {
     return {
       settingsData: {},
     };
+  },
+  methods: {
+    saveData() {
+      console.log(this.settingsData);
+    },
   },
 };
 </script>

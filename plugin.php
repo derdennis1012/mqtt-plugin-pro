@@ -130,6 +130,7 @@ final class MQTT_Plugin_Pro {
         define( 'MQTTPLUGINPRO_FILE', __FILE__ );
         define( 'MQTTPLUGINPRO_PATH', dirname( MQTTPLUGINPRO_FILE ) );
         define( 'MQTTPLUGINPRO_INCLUDES', MQTTPLUGINPRO_PATH . '/includes' );
+        define( 'MQTTPLUGINPRO_LIB', MQTTPLUGINPRO_PATH . '/lib' );
         define( 'MQTTPLUGINPRO_URL', plugins_url( '', MQTTPLUGINPRO_FILE ) );
         define( 'MQTTPLUGINPRO_ASSETS', MQTTPLUGINPRO_URL . '/assets' );
     }

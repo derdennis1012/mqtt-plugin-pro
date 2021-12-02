@@ -26,6 +26,9 @@ class Api extends WP_REST_Controller {
         if ( !class_exists( __NAMESPACE__ . '\Api\SettingsPage'  ) ) {
             require_once __DIR__ . '/Api/SettingsPage.php';
         }
+        if ( !class_exists( __NAMESPACE__ . '\Api\MQTTFunctions'  ) ) {
+            require_once __DIR__ . '/Api/MQTTFunctions.php';
+        }
     }
 
     /**
@@ -35,6 +38,7 @@ class Api extends WP_REST_Controller {
      */
     public function register_routes() {
         (new Api\SettingsPage())->register_routes();
+        (new Api\MQTTFunctions())->register_routes();
     }
 
 }
