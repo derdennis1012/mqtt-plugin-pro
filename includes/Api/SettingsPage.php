@@ -6,7 +6,7 @@ use WP_REST_Controller;
  * REST_API Handler
  */
 class SettingsPage extends WP_REST_Controller {
-    global $wpdb;
+    private $wpdb;
 
     /**
      * [__construct description]
@@ -14,6 +14,9 @@ class SettingsPage extends WP_REST_Controller {
     public function __construct() {
         $this->namespace = 'myapp/v1';
         $this->rest_base = 'settings';
+        global $wpdb;
+        $this->wpdb = $wpdb;
+
     }
 
     /**
@@ -68,23 +71,17 @@ class SettingsPage extends WP_REST_Controller {
 
 
     public function create_table(){
-        $table_name = $wpdb->prefix . "mqtt_pro_data"; 
-        $sql = "DROP TABLE " . $table_name . " IF EXSISTS";
+        $table_name = $this->wpdb->prefix . "mqtt_pro_data"; 
+        $sql = "DROP TABLE IF EXISTS ". $table_name;
         $this->wpdb->get_results($sql);
-        $sql = "create table " . $table_name . "
-        (
-            ID int auto_increment,
-            Topic varchar(255) null,
-            DataSet varchar(1000) null,
-            RecordCreated TIMESTAMP default CURRENT_TIMESTAMP null,
-            constraint wp_mqtt_pro_data_pk
-                primary key (ID)
-        );";
+        $sql = "create table " . $table_name . "(ID int auto_increment PRIMARY KEY,Topic varchar(255) null,DataSet varchar(1000) null,RecordCreated TIMESTAMP default CURRENT_TIMESTAMP null);";
+        $sql=str_replace("\r\n","",$sql);
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
         $respObj = [
-            'exist' => true
+            'exist' => true,
+            'sql' => $sql
         ];
 
         $response = rest_ensure_response( $respObj );

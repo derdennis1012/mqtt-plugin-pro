@@ -71,6 +71,7 @@ final class MQTT_Plugin_Pro {
     public function __construct() {
 
         $this->define_constants();
+    
 
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
         register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
@@ -157,7 +158,8 @@ final class MQTT_Plugin_Pro {
         if ( ! $installed ) {
             update_option( 'mqttpluginpro_installed', time() );
         }
-
+        include('installer.php');
+        
         update_option( 'mqttpluginpro_version', MQTTPLUGINPRO_VERSION );
     }
 
@@ -265,6 +267,7 @@ final class MQTT_Plugin_Pro {
                 return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
         }
     }
+
 
 } // MQTT_Plugin_Pro
 
