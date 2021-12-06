@@ -113,6 +113,7 @@ class SettingsPage extends WP_REST_Controller {
         $mqtt_topics = isset( $request['mqtt_topics'] ) ? sanitize_text_field( $request['mqtt_topics'] ): '';
         $mqtt_intervall = isset( $request['firstname'] ) ? sanitize_text_field( $request['firstname'] ): '';
         $mqtt_ttl = isset( $request['mqtt_ttl'] ) ? sanitize_text_field( $request['mqtt_ttl'] ): '';
+        $is_active = isset( $request['active'] ) ? sanitize_text_field( $request['active'] ): '';
 
 
         // Save option data into WordPress
@@ -124,6 +125,7 @@ class SettingsPage extends WP_REST_Controller {
         update_option( 'mqtt_pro_mqtt_topics', $mqtt_topics );
         update_option( 'mqtt_pro_mqtt_intervall', $mqtt_intervall );
         update_option( 'mqtt_pro_mqtt_ttl', $mqtt_ttl );
+        update_option( 'mqtt_pro_active', $is_active );
 
 
         $settingsData = [
@@ -135,6 +137,8 @@ class SettingsPage extends WP_REST_Controller {
             'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
             'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
             'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
+            'mqtt_ttl' => get_option( 'mqtt_pro_active', "false" ),
+
 
         ];
 
@@ -155,6 +159,7 @@ class SettingsPage extends WP_REST_Controller {
             'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
             'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
             'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
+            'mqtt_ttl' => get_option( 'mqtt_pro_active', false ),
 
         ];
 
