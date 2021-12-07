@@ -2,6 +2,8 @@
   <div class="app-settings">
     <h2>MQTT Plugin Pro Settings</h2>
     <hr />
+
+
     <div>
       <b-form-group
         v-b-tooltip.hover.right
@@ -9,23 +11,41 @@
       >
         <label>MQTT Broker URL</label>
         <b-form-input
-          id="input-1"
+          id="url"
           type="text"
-          placeholder="Enter MQTT URL"
+          placeholder="Enter MQTT URL without Port"
           v-model="settingsData.mqtt_url"
           required
         ></b-form-input>
+
+      </b-form-group>
+    </div>
+
+    <div>URL: {{ settingsData.mqtt_url }}</div>
+    <b-button @click="saveData" variant="primary">Speichern</b-button>
+    
+
+
+    <hr />
+
+
+    <div>
+      <b-form-group>
+      <label>MQTT Broker Port</label>
         <b-form-input
-          id="input-1"
-          type="text"
-          placeholder="Enter MQTT URL"
-          v-model="settingsData.mqtt_url2"
+          id="port"
+          type="number"
+          placeholder="Enter MQTT Port, default: 1883"
+          v-model="settingsData.mqtt_port"
           required
         ></b-form-input>
       </b-form-group>
     </div>
-    {{ settingsData }}
-    <b-button @click="saveData" variant="primary">Save</b-button>
+
+    <div>Port: {{ settingsData.mqtt_port }}</div>
+    <b-button @click="saveData" variant="primary">Speichern</b-button>
+    
+
   </div>
 </template>
 <!--
