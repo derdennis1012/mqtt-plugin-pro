@@ -194,7 +194,8 @@ final class MQTT_Plugin_Pro {
         }
 
         require_once MQTTPLUGINPRO_INCLUDES . '/Api.php';
-        
+        require_once MQTTPLUGINPRO_INCLUDES . '/MQTTBackendFunctions.php';
+
     }
 
     /**
@@ -231,6 +232,8 @@ final class MQTT_Plugin_Pro {
 
         $this->container['api'] = new App\Api();
         $this->container['assets'] = new App\Assets();
+        $this->container['mqttbackendfunctions'] = new App\Api();
+
     }
 
     /**

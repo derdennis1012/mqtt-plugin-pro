@@ -1,11 +1,12 @@
 <?php
 namespace App\Api;
-require_once( 'phpMQTT.php' );
+require_once( MQTTPLUGINPRO_INCLUDES.'/phpMQTT.php' );
 use WP_REST_Controller;
 
 /**
  * REST_API Handler
- */
+ */    
+
 
 class MQTTFunctions extends WP_REST_Controller {
 
@@ -15,6 +16,8 @@ class MQTTFunctions extends WP_REST_Controller {
     public function __construct() {
         $this->namespace = 'myapp/v1';
         $this->rest_base = 'mqtt-functions';
+        global $wpdb;
+        $this->wpdb = $wpdb;
     }
 
     /**

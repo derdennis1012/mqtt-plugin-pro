@@ -78,14 +78,11 @@ class SettingsPage extends WP_REST_Controller {
         $sql=str_replace("\r\n","",$sql);
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-
         $respObj = [
             'exist' => true,
             'sql' => $sql
         ];
-
         $response = rest_ensure_response( $respObj );
-
         return rest_ensure_response( $response );
     }
     public function check_table_exists(){
@@ -96,9 +93,7 @@ class SettingsPage extends WP_REST_Controller {
         $respObj = [
             'exist' => true
         ];
-
         $response = rest_ensure_response( $respObj );
-
         return rest_ensure_response( $response );
     }
 
@@ -137,15 +132,11 @@ class SettingsPage extends WP_REST_Controller {
             'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
             'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
             'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
-            'mqtt_ttl' => get_option( 'mqtt_pro_active', "false" ),
-
-
+            'active' => get_option( 'mqtt_pro_active', "false" ),
         ];
 
         $response = rest_ensure_response( $settingsData );
-
         return rest_ensure_response( $response );
-        
     }
 
 
@@ -159,12 +150,9 @@ class SettingsPage extends WP_REST_Controller {
             'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
             'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
             'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
-            'mqtt_ttl' => get_option( 'mqtt_pro_active', false ),
-
+            'active' => get_option( 'mqtt_pro_active', false ),
         ];
-
         $response = rest_ensure_response( $settingsData );
-
         return $response;
     }
 
