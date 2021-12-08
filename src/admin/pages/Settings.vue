@@ -8,10 +8,12 @@
       <b-form-group
         v-b-tooltip.hover.right
         title="z.B. 14.18.124.26 Ohne den Port">
+
         <label>MQTT Broker URL</label>
+
         <b-form-input
-          id="url"
-          type="url"
+          id="mqtt-url"
+          type="text"
           placeholder="Enter MQTT URL without Port"
           v-model="settingsData.mqtt_url"
           required
@@ -178,12 +180,32 @@
   Test Commit, sorry dafür
  -->
 <script>
+
 export default {
+  /*
+  computed: {
+    urlState() {
+      return this.settingsData.mqtt_url.length > 2 ? true : false
+    }
+  },
+  */
+  
   name: "Settings",
 
   data() {
     return {
-      settingsData: {},
+      settingsData: {
+        /*
+        mqtt_url: URL,
+        mqtt_port: Number,  
+        mqtt_client_id: Number,
+        mqtt_user: Text,
+        mqtt_password: Text,
+        mqtt_topics: Text,
+        mqtt_intervall: Number,
+        mqtt_ttl: Number
+        */
+      },
     };
   },
   methods: {
