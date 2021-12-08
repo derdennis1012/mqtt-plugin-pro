@@ -11,15 +11,14 @@
         <label>MQTT Broker URL</label>
         <b-form-input
           id="url"
-          type="text"
+          type="url"
           placeholder="Enter MQTT URL without Port"
           v-model="settingsData.mqtt_url"
           required
         ></b-form-input> 
       </b-form-group>
     </div>
-    <div>URL: {{ settingsData.mqtt_url }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button> 
+    <div>URL: {{ settingsData.mqtt_url }}</div> 
     
 
     <hr />
@@ -39,7 +38,7 @@
       </b-form-group>
     </div>
     <div>Port: {{ settingsData.mqtt_port }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
+    
 
 
     <hr />
@@ -59,7 +58,7 @@
       </b-form-group>
     </div>
     <div>ID: {{ settingsData.mqtt_client_id }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
+    
 
     <hr />
 
@@ -73,12 +72,11 @@
           type="text"
           placeholder="Enter User"
           v-model="settingsData.mqtt_user"
-          required
+          
         ></b-form-input>
       </b-form-group>
     </div>
     <div>ID: {{ settingsData.mqtt_user }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
 
 
     <hr />
@@ -95,13 +93,12 @@
           type="password"
           
           v-model="settingsData.mqtt_password"
-          required
+         
         ></b-form-input>
        
       </b-form-group>
     </div>
      <!--div>ID: {{ settingsData.mqtt_password }}</div-->
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
 
 
     <hr />
@@ -121,7 +118,6 @@
       </b-form-group>
     </div>
     <div>ID: {{ settingsData.mqtt_topics }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
 
 
     <hr />
@@ -141,7 +137,6 @@
       </b-form-group>
     </div>
     <div>ID: {{ settingsData.mqtt_intervall }}</div>
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
 
 
     <hr />
@@ -161,9 +156,12 @@
       </b-form-group>
     </div>
     <div>ID: {{ settingsData.mqtt_ttl }}</div>
+
+
+    <hr />
+
+
     <b-button @click="saveData" variant="primary">Speichern</b-button>
-
-
   </div>
 </template>
 <!--
