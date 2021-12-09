@@ -1,10 +1,31 @@
 <?php
+
+
+
 namespace App\Api;
 use WP_REST_Controller;
 
 /**
  * REST_API Handler
  */
+
+
+if ( ! function_exists('write_log')) {
+    function write_log ( $log )  {
+        if ( is_array( $log ) || is_object( $log ) ) {
+            error_log( print_r( $log, true ) );
+        } else {
+            error_log( $log );
+        }
+    }
+}
+
+
+
+require_once( MQTTPLUGINPRO_INCLUDES.'/phpMQTT.php' );
+require_once MQTTPLUGINPRO_INCLUDES . '/MQTTBackendFunctions.php';
+
+
 class SettingsPage extends WP_REST_Controller {
     private $wpdb;
 
@@ -16,6 +37,8 @@ class SettingsPage extends WP_REST_Controller {
         $this->rest_base = 'settings';
         global $wpdb;
         $this->wpdb = $wpdb;
+
+        add_action( 'cron_mqtt', array( $this, 'hook_fn_mqtt') );
 
     }
 
@@ -37,8 +60,8 @@ class SettingsPage extends WP_REST_Controller {
                 ],
                 [
                     'methods'             => \WP_REST_Server::CREATABLE,
-                    'callback'            => [ $this, 'create_items' ],
-                    'permission_callback' => [ $this, 'create_items_permission_check' ],
+                    'callback'            => [ $this, 'set_settings_data' ],
+                    'permission_callback' => [ $this, 'set_settings_data_permission_check' ],
                     'args'                => $this->get_endpoint_args_for_item_schema(true )
                 ]
             ]
@@ -67,6 +90,102 @@ class SettingsPage extends WP_REST_Controller {
                 ]
             ]
         );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base . '/activate',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'activate_service' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+    
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base . '/disable',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'disable_service' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+    }
+
+
+    public function hook_fn_mqtt(){
+        write_log( "GET MQTT" );
+        //$MQTTFN = new \APP\MQTTBackendFunctions();
+        //$MQTTFN->mqtt_subscribe();
+        write_log( "DONE MQTT" );
+    }
+
+    public function activate_service(){
+        write_log("Go into activate service.");
+
+        $activated = "false";
+        $error = "false";
+        $cStatus =  get_option( 'mqtt_pro_active', "false" );
+        if($cStatus == 'true'){
+            $activated = "true";
+        }else{
+            if($this->checkMQTTConnection()){
+                //MQQT Geht -> Hook Registrieren
+                write_log("MQTT works, register Hook now!!");
+
+                /*wp_clear_scheduled_hook('cron_mqtt');
+                if ( ! wp_get_schedule( 'cron_mqtt' ) ) {
+                    wp_schedule_event( time(), '1min', 'cron_mqtt' );
+                }*/
+                update_option( 'mqtt_pro_active', "true" );
+
+                do_action( 'mqtt_get',null);
+                write_log("Hook registred, hopefully...!!");
+                $activated = "true";
+
+            }else{
+                $error = "true";
+            }
+        }
+        $respObj = [
+            'activated' =>  $activated,
+            'error'=> $error
+        ];
+
+        $response = rest_ensure_response( $respObj );
+    }
+    public function disable_service(){
+        $activated = "false";
+        $respObj = [
+            'activated' =>  $activated,
+        ];
+        write_log( "Disabled" );
+        //Hook beenden
+        do_action( 'mqtt_disable',null);
+        update_option( 'mqtt_pro_active', $activated );
+
+        $response = rest_ensure_response( $respObj );
+    }
+
+    public function checkMQTTConnection(){
+        $settingsData = [
+            'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
+            'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
+            'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
+        ];
+
+
+        $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+        if ($mqtt->connect()) return true;
+        else return false;
     }
 
 
@@ -97,7 +216,7 @@ class SettingsPage extends WP_REST_Controller {
         return rest_ensure_response( $response );
     }
 
-    public function create_items( $request ) {
+    public function set_settings_data( $request ) {
 
         // Data validation
         $mqtt_url = isset( $request['mqtt_url'] ) ? sanitize_text_field( $request['mqtt_url'] ): '';
@@ -158,10 +277,12 @@ class SettingsPage extends WP_REST_Controller {
 
 
     public function get_items_permissions_check( $request ) {
+
         return true;
     }
 
-    public function create_items_permission_check( $request ) {
+    public function set_settings_data_permission_check( $request ) {
+        
         return true;
     }
 

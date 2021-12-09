@@ -13,7 +13,7 @@ class MQTTBackendFunctions {
         $this->includes();
         global $wpdb;
         $this->wpdb = $wpdb;
-        $this->mqtt_subscribe();
+        //$this->mqtt_subscribe();
 
     }
 
@@ -34,7 +34,9 @@ class MQTTBackendFunctions {
 
 
 
-    private function mqtt_subscribe(){
+    public function mqtt_subscribe(){
+        $table_name = $this->wpdb->prefix . "mqtt_pro_data";
+
         if($this->check_ready()){
             $settingsData = [
                 'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
@@ -44,7 +46,7 @@ class MQTTBackendFunctions {
                 'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
                 'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
             ];
-            //$mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+            $mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
            if ($mqtt->connect()) {
                 //Verbindung erfolgreich
                 //Topic festlegen
@@ -61,6 +63,7 @@ class MQTTBackendFunctions {
                 //Hier fehler behandeln
             }
         }else return;
+        
     }
 
     function procmsg($topic,$msg){
@@ -68,7 +71,6 @@ class MQTTBackendFunctions {
 		echo "Msg Recieved: ".date("r")."\nTopic:{$topic}\n$msg\n";
         $sql = "INSERT INTO `".$table_name."` VALUES(null,'".$topic."','".$msg."',CURRENT_TIMESTAMP());";
         $this->wpdb->query($sql);
-        trigger_error("Kann nicht durch 0 teilen", E_USER_ERROR);
     }
 
 

@@ -38,8 +38,48 @@ Domain Path: /languages
  * **********************************************************************
  */
 
+//Add a utility function to handle logs more nicely.
+if ( ! function_exists('write_log')) {
+    function write_log ( $log )  {
+        if ( is_array( $log ) || is_object( $log ) ) {
+            error_log( print_r( $log, true ) );
+        } else {
+            error_log( $log );
+        }
+    }
+}
+
 // don't call the file directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( !defined( 'ABSPATH' ) ){
+    write_log( "Plugin should not be accessed directly!" );
+    exit;
+}
+
+
+function my_cron_schedules($schedules){
+    write_log( "Creating Scheduler!" );
+
+    if(!isset($schedules["1min"])){
+        $schedules["1min"] = array(
+            'interval' => 1*60,
+            'display' => __('Once every minute'));
+    }
+    if(!isset($schedules["5min"])){
+        $schedules["5min"] = array(
+            'interval' => 5*60,
+            'display' => __('Once every 5 minutes'));
+    }
+    if(!isset($schedules["30min"])){
+        $schedules["30min"] = array(
+            'interval' => 30*60,
+            'display' => __('Once every 30 minutes'));
+    }
+    write_log( "Created Scheduler!" );
+
+    return $schedules;
+}
+add_filter('cron_schedules','my_cron_schedules');
+
 
 /**
  * MQTT_Plugin_Pro class
@@ -76,8 +116,20 @@ final class MQTT_Plugin_Pro {
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
         register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 
+
+        add_action( 'mqtt_get', array( $this, 'register_the_hook') );
+        add_action( 'mqtt_disable', array( $this, 'disable_the_hook') );
+
+	
+        do_action( 'mqtt_get',null);
         add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
+        add_action( 'woocsp_cron_delivery', array( $this, 'scheduleTriggered') );
+
     }
+
+
+
+//Add cron schedules filter with upper defined schedule.
 
     /**
      * Initializes the MQTT_Plugin_Pro() class
@@ -109,7 +161,11 @@ final class MQTT_Plugin_Pro {
 
         return $this->{$prop};
     }
-
+    //Custom function to be called on schedule triggered.
+    function scheduleTriggered() {
+        write_log( "Scheduler triggered!" );
+        $this->get_mqtt_data();
+    }
     /**
      * Magic isset to bypass referencing plugin.
      *
@@ -146,6 +202,19 @@ final class MQTT_Plugin_Pro {
         $this->init_hooks();
     }
 
+
+    public function get_mqtt_data(){
+        write_log( "GET MQTT" );
+
+        $MQTTFN = new APP\MQTTBackendFunctions();
+        $MQTTFN->mqtt_subscribe();
+        write_log( "DONE MQTT" );
+
+    }
+
+
+ 
+
     /**
      * Placeholder for activation function
      *
@@ -161,6 +230,36 @@ final class MQTT_Plugin_Pro {
         include('installer.php');
         
         update_option( 'mqttpluginpro_version', MQTTPLUGINPRO_VERSION );
+
+        write_log("Plugin activating.");
+
+  
+    
+        write_log("Plugin activated.");
+/*
+             //Trigger our method on our custom schedule event.
+          
+*/
+        
+       // wp_schedule_event( time(), '5min', 'mqtt_get' );
+    }
+
+
+    public function register_the_hook(){
+        write_log("Wenn das nicht klappt rast ich aus!");
+        $cStatus =  get_option( 'mqtt_pro_active', false );
+        write_log($cStatus.'Hello??');
+        if ( ! wp_get_schedule( 'woocsp_cron_delivery' ) &&  $cStatus == 'true') {
+            write_log($cStatus.'Hat geklappt...');
+            wp_schedule_event( time(), '1min', 'woocsp_cron_delivery' );
+        }
+        
+    }
+    
+    public function disable_the_hook(){
+        write_log("Ist deaktiviert!");
+        wp_clear_scheduled_hook('woocsp_cron_delivery');
+
     }
 
     /**
@@ -169,7 +268,13 @@ final class MQTT_Plugin_Pro {
      * Nothing being called here yet.
      */
     public function deactivate() {
+        //wp_clear_scheduled_hook( 'mqtt_get' );
+        write_log("Plugin deactivating.");
 
+        //Remove our scheduled hook.
+        wp_clear_scheduled_hook('woocsp_cron_delivery');
+    
+        write_log("Plugin deactivated.");
     }
 
     /**
@@ -226,13 +331,13 @@ final class MQTT_Plugin_Pro {
             $this->container['frontend'] = new App\Frontend();
         }
 
-        if ( $this->is_request( 'ajax' ) ) {
-            // $this->container['ajax'] =  new App\Ajax();
+        //@ToDO
+       /* if ( $this->is_request( 'ajax' ) ) {
+            $this->container['ajax'] =  new App\Ajax();
         }
-
+        */
         $this->container['api'] = new App\Api();
         $this->container['assets'] = new App\Assets();
-        $this->container['mqttbackendfunctions'] = new App\Api();
 
     }
 
