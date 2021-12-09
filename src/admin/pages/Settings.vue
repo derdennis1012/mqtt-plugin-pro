@@ -13,12 +13,13 @@
 
         <b-form-input
           id="mqtt-url"
-          type="text"
+          type="url"
           placeholder="Enter MQTT URL without Port"
           v-model="settingsData.mqtt_url"
           required
         ></b-form-input> 
       </b-form-group>
+
     </div>
     <div>URL: {{ settingsData.mqtt_url }}</div> 
     
@@ -145,25 +146,38 @@
 
 
     <!--MQTT ttl-->
-    <div>
-      <b-form-group>
-      <label>MQTT Time To Live</label>
-        <b-form-input
-          id="port"
-          type="number"
-          placeholder="How long the MQTT values are stored (in days)"
-          v-model="settingsData.mqtt_ttl"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <div>ID: {{ settingsData.mqtt_ttl }}</div>
+    
+    <b-form-group>
+    <label for="ttl-live">MQTT Time To Live</label>
+      <b-form-input
+        id="ttl-live"
+          
+        v-model="settingsData.mqtt_ttl"
+        :state="ttlState"
+        aria-describedby="ttl-live-help ttl-live-feedback"
+        placeholder="How long the MQTT values are stored (in days)"
+        trim
+      ></b-form-input>
+
+
+      <b-form-invalid-feedback id="ttl-live-feedback">
+        Zahl muss > 0 sein.
+      </b-form-invalid-feedback>
+
+      <b-form-text id="ttl-live-help">
+        Anzahl der Tage, die der Wert gespeichert werden soll.
+      </b-form-text>
+
+    </b-form-group>
+    <!--div>ID: {{ settingsData.mqtt_ttl }}</div-->
 
 
     <hr />
 
 
     <b-button @click="saveData" variant="primary">Speichern</b-button>
+
+
   </div>
 </template>
 <!--
@@ -182,16 +196,7 @@
 <script>
 
 export default {
-  /*
-  computed: {
-    urlState() {
-      return this.settingsData.mqtt_url.length > 2 ? true : false
-    }
-  },
-  */
-  
   name: "Settings",
-
   data() {
     return {
       settingsData: {
@@ -211,6 +216,9 @@ export default {
   methods: {
     saveData() {
       console.log(this.settingsData);
+    },
+    ttlState() {
+      return this.settingsData.mqtt_ttl.lenght > 2 ? true : false
     },
   },
 };
