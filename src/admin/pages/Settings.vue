@@ -7,40 +7,43 @@
     <div>
       <b-form-group
         v-b-tooltip.hover.right
-        title="z.B. 14.18.124.26 Ohne den Port">
+        title="e.g. 14.18.124.26">
 
-        <label>MQTT Broker URL</label>
-
+        <label>MQTT Broker URL:</label>
+        
         <b-form-input
-          id="mqtt-url"
+          id="url"
           type="url"
           placeholder="Enter MQTT URL without Port"
           v-model="settingsData.mqtt_url"
           required
         ></b-form-input> 
       </b-form-group>
-
     </div>
-    <div>URL: {{ settingsData.mqtt_url }}</div> 
-    
+    <!--div>URL: {{ settingsData.mqtt_url }}</div--> 
+  
 
     <hr />
 
 
     <!--MQTT Port-->
     <div>
-      <b-form-group>
-      <label>MQTT Broker Port</label>
+      <b-form-group
+      v-b-tooltip.hover.right
+        title="Default: 1883">
+
+      <label>MQTT Broker Port:</label>
+
         <b-form-input
           id="port"
           type="number"
-          placeholder="Enter MQTT Port, default: 1883"
+          placeholder="Enter MQTT Port"
           v-model="settingsData.mqtt_port"
           required
         ></b-form-input>
       </b-form-group>
     </div>
-    <div>Port: {{ settingsData.mqtt_port }}</div>
+    <!--div>Port: {{ settingsData.mqtt_port }}</div-->
     
 
 
@@ -50,9 +53,11 @@
     <!--MQTT client id-->
     <div>
       <b-form-group>
-      <label>MQTT Client ID</label>
+
+      <label>MQTT Client ID:</label>
+
         <b-form-input
-          id="port"
+          id="id"
           type="text"
           placeholder="Enter Client ID"
           v-model="settingsData.mqtt_client_id"
@@ -60,7 +65,7 @@
         ></b-form-input>
       </b-form-group>
     </div>
-    <div>ID: {{ settingsData.mqtt_client_id }}</div>
+    <!--div>ID: {{ settingsData.mqtt_client_id }}</div-->
     
 
     <hr />
@@ -68,10 +73,14 @@
 
     <!--MQTT User: optional - Prüfen, ob User existiert-->
     <div>
-      <b-form-group>
-      <label>MQTT User</label>
+      <b-form-group
+      v-b-tooltip.hover.right
+        title="Blank if no User">
+
+      <label>MQTT User:</label>
+
         <b-form-input
-          id="port"
+          id="user"
           type="text"
           placeholder="Enter User"
           v-model="settingsData.mqtt_user"
@@ -79,7 +88,7 @@
         ></b-form-input>
       </b-form-group>
     </div>
-    <div>ID: {{ settingsData.mqtt_user }}</div>
+    <!--div>ID: {{ settingsData.mqtt_user }}</div-->
 
 
     <hr />
@@ -90,13 +99,13 @@
       <b-form-group
         v-b-tooltip.hover.right
         title="Enter Password for User">
-      <label>MQTT Password</label>
+
+      <label>MQTT Password:</label>
+
         <b-form-input
-          id="port"
+          id="pw"
           type="password"
-          
           v-model="settingsData.mqtt_password"
-         
         ></b-form-input>
        
       </b-form-group>
@@ -107,77 +116,107 @@
     <hr />
 
 
-    <!--MQTT Topics-->
-    <div>
-      <b-form-group>
-      <label>MQTT Topics</label>
-        <b-form-input
-          id="port"
-          type="text"
-          placeholder="Comma-separated list of topics, like: sensor_1,sensor_2,..."
-          v-model="settingsData.mqtt_topics"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <div>ID: {{ settingsData.mqtt_topics }}</div>
+    <!--MQTT Topics mit regex prüfen-->
+      <div>
+        <b-form-group
+        v-b-tooltip.hover.right
+          title="Format: sensor_1,sensor_2,...">
+
+        <label>MQTT Topics:</label>
+
+          <b-form-input 
+            id="topics"
+            type="text"
+            placeholder="Comma-separated list of topics"
+            v-model="settingsData.mqtt_topics"
+            required
+          ></b-form-input>
+
+        </b-form-group>
+      </div>
+    <!--div>ID: {{ settingsData.mqtt_topics }}</div-->
 
 
     <hr />
 
 
     <!--MQTT intervall-->
-    <div>
-      <b-form-group>
-      <label>MQTT Intervall</label>
-        <b-form-input
-          id="port"
-          type="number"
-          placeholder="Interval to wait for the MQTT values (in seconds)"
-          v-model="settingsData.mqtt_intervall"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <div>ID: {{ settingsData.mqtt_intervall }}</div>
-
+    <ValidationProvider rules="positive|required" v-slot="{ errors }">
+      <div>
+        <b-form-group
+        v-b-tooltip.hover.right
+          title="Time in seconds">
+        <label>MQTT Intervall:</label>
+          <b-form-input
+            id="intervall"
+            type="number"
+            placeholder="Interval to wait for the MQTT values (in seconds)"
+            v-model="settingsData.mqtt_intervall"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+    <!--div>ID: {{ settingsData.mqtt_intervall }}</div-->
+    <div>{{ errors[0] }}</div>
+    </ValidationProvider>
 
     <hr />
 
 
     <!--MQTT ttl-->
-    
-    <b-form-group>
-    <label for="ttl-live">MQTT Time To Live</label>
-      <b-form-input
-        id="ttl-live"
-          
-        v-model="settingsData.mqtt_ttl"
-        :state="ttlState"
-        aria-describedby="ttl-live-help ttl-live-feedback"
-        placeholder="How long the MQTT values are stored (in days)"
-        trim
-      ></b-form-input>
+    <ValidationProvider rules="positive|required" v-slot="{ errors }">
+      <b-form-group
+        v-b-tooltip.hover.right
+        title="Time in days">
 
+      <label for="ttl-live">MQTT Time To Live:</label>
 
-      <b-form-invalid-feedback id="ttl-live-feedback">
-        Zahl muss > 0 sein.
-      </b-form-invalid-feedback>
-
-      <b-form-text id="ttl-live-help">
-        Anzahl der Tage, die der Wert gespeichert werden soll.
-      </b-form-text>
-
-    </b-form-group>
+        <b-form-input
+          id="ttl"
+          type="number"
+          v-model="settingsData.mqtt_ttl"
+          placeholder="How long the MQTT values are stored (in days)"
+          required
+        ></b-form-input>
+      </b-form-group>
     <!--div>ID: {{ settingsData.mqtt_ttl }}</div-->
+    <div>{{ errors[0] }}</div>
+    </ValidationProvider>
 
 
     <hr />
 
 
-    <b-button @click="saveData" variant="primary">Speichern</b-button>
+    <div>
+      <b-card bg-variant="secondary" text-variant="white" title="Check MQTT connection">
+        <b-card-text>
+          To check if your entered details work, please check the MQTT connection with the button below.
+        </b-card-text>
+         <b-button @click="checkConnection" variant="primary">Check connection!</b-button>
+      </b-card>
+    </div>
 
+    <div>
+      <b-card-group>
+        <b-card bg-variant="danger" text-variant="white" header="Danger" class="text-center">
+            <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+        </b-card>
+        
+        <b-card bg-variant="success" text-variant="white" header="Success" class="text-center">
+            <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+        </b-card>
+      </b-card-group>
+    </div>
 
+    <hr />
+
+    <!--Save button erscheint nur, wenn connection erfolgreich war-->
+    <h5>
+      Don't forget to save the entered details.
+      <div>
+        <b-button @click="saveData" variant="primary">Save</b-button>
+      </div>
+    </h5>
   </div>
 </template>
 <!--
@@ -189,36 +228,41 @@
 
   @Validation
   https://vee-validate.logaretm.com/v4/
-
-
-  Test Commit, sorry dafür
  -->
 <script>
+/*Validation Import, extend = eigene Regeln*/
+import { extend, ValidationProvider, Field, Form } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+/*Zahl muss > 0 sein */
+extend('positive', value => {
+  if (value > 0) {
+    return true;
+  }
+  return 'Please choose a number bigger than 0';
+});
+
+/*Extend default required rule by error message*/
+extend('required', {
+  ...required,
+  message: 'This field is required'
+});
+
 
 export default {
+  components: {
+    ValidationProvider,
+  },
   name: "Settings",
   data() {
     return {
-      settingsData: {
-        /*
-        mqtt_url: URL,
-        mqtt_port: Number,  
-        mqtt_client_id: Number,
-        mqtt_user: Text,
-        mqtt_password: Text,
-        mqtt_topics: Text,
-        mqtt_intervall: Number,
-        mqtt_ttl: Number
-        */
-      },
+      settingsData: {},
     };
   },
   methods: {
     saveData() {
       console.log(this.settingsData);
     },
-    ttlState() {
-      return this.settingsData.mqtt_ttl.lenght > 2 ? true : false
+    checkConnection() {
     },
   },
 };
