@@ -14,6 +14,12 @@ Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
 
+import moment from "moment";
+import "moment/locale/en"; // without this line it didn't work
+moment.locale("en");
+Vue.prototype.moment = moment;
+
+
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
