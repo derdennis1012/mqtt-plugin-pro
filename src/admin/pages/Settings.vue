@@ -141,7 +141,7 @@
 
 
     <!--MQTT intervall-->
-    <ValidationProvider rules="positive|required" v-slot="{ errors }">
+    <validationprovider rules="positive|required" v-slot="{ errors }">
       <div>
         <b-form-group
         v-b-tooltip.hover.right
@@ -158,55 +158,46 @@
       </div>
     <!--div>ID: {{ settingsData.mqtt_intervall }}</div-->
     <div>{{ errors[0] }}</div>
-    </ValidationProvider>
+    </validationprovider>
 
     <hr />
 
 
     <!--MQTT ttl-->
-    <ValidationProvider rules="positive|required" v-slot="{ errors }">
-      <b-form-group
-        v-b-tooltip.hover.right
-        title="Time in days">
+    <div>
+      <validation-observer ref="observer" v-slot="{ handleSubmit }">
+        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
 
-      <label for="ttl-live">MQTT Time To Live:</label>
+          <validation-provider
+            name="MQTT time to live"
+            :rules="{ required: true }" 
+            v-slot="validationContext"
+          >
 
-        <b-form-input
-          id="ttl"
-          type="number"
-          v-model="settingsData.mqtt_ttl"
-          placeholder="How long the MQTT values are stored (in days)"
-          required
-        ></b-form-input>
-      </b-form-group>
-    <!--div>ID: {{ settingsData.mqtt_ttl }}</div-->
-    <div>{{ errors[0] }}</div>
-    </ValidationProvider>
 
+            <b-form-group id="kekw" label="MQTT time to live" label-for="ttl">
+
+              <b-form-input
+                id="ttl"
+                name="ttl"
+                v-model="settingsData.mqtt_ttl"
+                :state="getValidationState(validationContext)"
+                aria-describedby="ttl-live-feedback"
+              ></b-form-input>
+
+              <b-form-invalid-feedback id="ttl-live-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+
+            </b-form-group>
+          </validation-provider>
+          
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button class="ml-2" @click="resetForm()">Reset</b-button>
+
+        </b-form>
+      </validation-observer>
+    </div>
 
     <hr />
-
-
-    <div>
-      <b-card bg-variant="secondary" text-variant="white" title="Check MQTT connection">
-        <b-card-text>
-          To check if your entered details work, please check the MQTT connection with the button below.
-        </b-card-text>
-         <b-button @click="checkConnection" variant="primary">Check connection!</b-button>
-      </b-card>
-    </div>
-
-    <div>
-      <b-card-group>
-        <b-card bg-variant="danger" text-variant="white" header="Danger" class="text-center">
-            <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
-        </b-card>
-        
-        <b-card bg-variant="success" text-variant="white" header="Success" class="text-center">
-            <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
-        </b-card>
-      </b-card-group>
-    </div>
 
     <hr />
 
@@ -231,8 +222,18 @@
  -->
 <script>
 /*Validation Import, extend = eigene Regeln*/
-import { extend, ValidationProvider, Field, Form } from 'vee-validate';
+/*ValidationObserver -> Link*/
+import { 
+  ValidationObserver,
+  ValidationProvider,
+  extend,
+  localize } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
+
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+
+
 /*Zahl muss > 0 sein */
 extend('positive', value => {
   if (value > 0) {
@@ -249,22 +250,42 @@ extend('required', {
 
 
 export default {
-  components: {
-    ValidationProvider,
-  },
   name: "Settings",
+
   data() {
     return {
       settingsData: {},
+
+      form: {
+        ttl: null
+      }
     };
   },
   methods: {
     saveData() {
       console.log(this.settingsData);
     },
-    checkConnection() {
+
+
+    getValidationState({ dirty, validated, valid = null }) {
+      return dirty || validated ? valid : null;
     },
-  },
+
+
+    resetForm() {
+      this.form = {
+        ttl: null
+      };
+      this.$nextTick(() => {
+        this.$refs.observer.reset();
+      });
+    },
+
+
+    onSubmit() {
+      alert("Form submitted!");
+    }
+  }
 };
 </script>
 
