@@ -38,8 +38,78 @@ class MQTTFunctions extends WP_REST_Controller {
                 ]
             ]
         );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base .'/get',
+            [
+                [
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'get_mqtt_values' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base .'/get-latest',
+            [
+                [
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'get_mqtt_value_latest' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base .'/get-avg',
+            [
+                [
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'get_mqtt_value_avg' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
     }
 
+    public function get_mqtt_values( $request ){
+        $topic = $request['topic'];
+        $sql = "SELECT * FROM wp_mqtt_pro_data WHERE topic = '".$topic."' ORDER BY RecordCreated DESC";
+        $res = $this->wpdb->get_results($sql,ARRAY_A);
+        $respObj = [
+            'res'=>$res
+        ];
+        $response = rest_ensure_response(  $res  );
+
+        return $response;
+    }
+
+    public function get_mqtt_value_latest( $request ){
+        $topic = $request['topic'];
+        $sql = "SELECT * FROM wp_mqtt_pro_data WHERE topic = '".$topic."' ORDER BY RecordCreated DESC";
+        $res = $this->wpdb->get_results($sql,ARRAY_A);
+        $respObj = [
+            'res'=>$res[0]
+        ];
+        $response = rest_ensure_response( $respObj  );
+
+        return $response;
+    }
+    public function get_mqtt_value_avg( $request ){
+        $topic = $request['topic'];
+        $sql = "SELECT AVG(CAST(DataSet AS DECIMAL(10,2) )) AS AVG FROM wordpress.wp_mqtt_pro_data WHERE topic = '".$topic."' ORDER BY RecordCreated DESC";
+        $res = $this->wpdb->get_results($sql,ARRAY_A);
+        $respObj = [
+            'res'=>$res
+        ];
+        $response = rest_ensure_response(  $res  );
+
+        return $response;
+    }
     public function check_connection( $request ) {
         $conncected = null;
         $settingsData = [

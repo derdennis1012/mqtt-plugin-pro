@@ -252,6 +252,8 @@ final class MQTT_Plugin_Pro {
         if ( ! wp_get_schedule( 'woocsp_cron_delivery' ) &&  $cStatus == 'true') {
             write_log($cStatus.'Hat geklappt...');
             wp_schedule_event( time(), '1min', 'woocsp_cron_delivery' );
+        }else{
+            write_log('Scheiße .. nicht ausrasten....');
         }
         
     }

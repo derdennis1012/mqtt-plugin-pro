@@ -15,8 +15,7 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 
 import moment from "moment";
-import "moment/locale/en-gb"; // without this line it didn't work
-moment.locale("en-gb");
+
 Vue.prototype.moment = moment;
 
 

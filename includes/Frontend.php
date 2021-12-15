@@ -33,14 +33,15 @@ class Frontend {
             $suffix = $atts['forsuffixmat'];
         }else $suffix = "";
      $id = uniqid();
-
+        $url = get_site_url();
         $vue_atts = esc_attr( json_encode( [
             'type' => $type, 
             'icon' => $icon,
             'topic' => $topic,
             'format' => $format,
             'suffix' => $suffix,
-            'id' => $id
+            'id' => $id,
+            'site_url' => $url
         ] ) );
         wp_enqueue_style( 'mqttpluginpro-frontend' );
         wp_enqueue_script( 'mqttpluginpro-frontend' );
