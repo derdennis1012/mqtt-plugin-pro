@@ -261,7 +261,6 @@ final class MQTT_Plugin_Pro {
     public function disable_the_hook(){
         write_log("Ist deaktiviert!");
         wp_clear_scheduled_hook('woocsp_cron_delivery');
-
     }
 
     /**

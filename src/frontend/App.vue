@@ -1,7 +1,6 @@
 <template>
   <div class="">
     <div class="shadow p-3 mb-5 bg-white rounded">
-      {{ diff }}
       <div
         class="d-flex align-items-top justify-content-between "
         v-if="latestValue"
