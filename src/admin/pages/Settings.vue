@@ -1,293 +1,267 @@
+ 
 <template>
-  <div class="app-settings">
-    <h2>MQTT Plugin Pro Settings</h2>
-    <hr />
+  <validation-observer ref="simpleRules">
+    <b-form>
+      <b-row>
 
-    <!--MQTT URL-->
-    <div>
-      <b-form-group
-        v-b-tooltip.hover.right
-        title="e.g. 14.18.124.26">
-
-        <label>MQTT Broker URL:</label>
-        
-        <b-form-input
-          id="url"
-          type="url"
-          placeholder="Enter MQTT URL without Port"
-          v-model="settingsData.mqtt_url"
-          required
-        ></b-form-input> 
-      </b-form-group>
-    </div>
-    <!--div>URL: {{ settingsData.mqtt_url }}</div--> 
-  
-
-    <hr />
-
-
-    <!--MQTT Port-->
-    <div>
-      <b-form-group
-      v-b-tooltip.hover.right
-        title="Default: 1883">
-
-      <label>MQTT Broker Port:</label>
-
-        <b-form-input
-          id="port"
-          type="number"
-          placeholder="Enter MQTT Port"
-          v-model="settingsData.mqtt_port"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <!--div>Port: {{ settingsData.mqtt_port }}</div-->
-    
-
-
-    <hr />
-
-
-    <!--MQTT client id-->
-    <div>
-      <b-form-group>
-
-      <label>MQTT Client ID:</label>
-
-        <b-form-input
-          id="id"
-          type="text"
-          placeholder="Enter Client ID"
-          v-model="settingsData.mqtt_client_id"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <!--div>ID: {{ settingsData.mqtt_client_id }}</div-->
-    
-
-    <hr />
-
-
-    <!--MQTT User: optional - Prüfen, ob User existiert-->
-    <div>
-      <b-form-group
-      v-b-tooltip.hover.right
-        title="Blank if no User">
-
-      <label>MQTT User:</label>
-
-        <b-form-input
-          id="user"
-          type="text"
-          placeholder="Enter User"
-          v-model="settingsData.mqtt_user"
-          
-        ></b-form-input>
-      </b-form-group>
-    </div>
-    <!--div>ID: {{ settingsData.mqtt_user }}</div-->
-
-
-    <hr />
-
-
-    <!--MQTT password: optional - Prüfen, ob pw korrekt-->
-    <div>
-      <b-form-group
-        v-b-tooltip.hover.right
-        title="Enter Password for User">
-
-      <label>MQTT Password:</label>
-
-        <b-form-input
-          id="pw"
-          type="password"
-          v-model="settingsData.mqtt_password"
-        ></b-form-input>
-       
-      </b-form-group>
-    </div>
-     <!--div>ID: {{ settingsData.mqtt_password }}</div-->
-
-
-    <hr />
-
-
-    <!--MQTT Topics mit regex prüfen-->
-      <div>
-        <b-form-group
-        v-b-tooltip.hover.right
-          title="Format: sensor_1,sensor_2,...">
-
-        <label>MQTT Topics:</label>
-
-          <b-form-input 
-            id="topics"
-            type="text"
-            placeholder="Comma-separated list of topics"
-            v-model="settingsData.mqtt_topics"
-            required
-          ></b-form-input>
-
-        </b-form-group>
-      </div>
-    <!--div>ID: {{ settingsData.mqtt_topics }}</div-->
-
-
-    <hr />
-
-
-    <!--MQTT intervall-->
-    <validationprovider rules="positive|required" v-slot="{ errors }">
-      <div>
-        <b-form-group
-        v-b-tooltip.hover.right
-          title="Time in seconds">
-        <label>MQTT Intervall:</label>
-          <b-form-input
-            id="intervall"
-            type="number"
-            placeholder="Interval to wait for the MQTT values (in seconds)"
-            v-model="settingsData.mqtt_intervall"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </div>
-    <!--div>ID: {{ settingsData.mqtt_intervall }}</div-->
-    <div>{{ errors[0] }}</div>
-    </validationprovider>
-
-    <hr />
-
-
-    <!--MQTT ttl-->
-    <div>
-      <validation-observer ref="observer" v-slot="{ handleSubmit }">
-        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
-
-          <validation-provider
-            name="MQTT time to live"
-            :rules="{ required: true }" 
-            v-slot="validationContext"
-          >
-
-
-            <b-form-group id="kekw" label="MQTT time to live" label-for="ttl">
-
+        <!--MQTT URL-->
+        <b-col md="6">
+          <b-form-group>
+            <label>Enter MQTT URL:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required|regex:^([0-9]{2}\.[0-9]{2}\.[0-9]{3}\.[0-9]{2})$"
+              name="Enter MQTT URL without Port"
+            >
               <b-form-input
-                id="ttl"
-                name="ttl"
-                v-model="settingsData.mqtt_ttl"
-                :state="getValidationState(validationContext)"
-                aria-describedby="ttl-live-feedback"
-              ></b-form-input>
+                v-model="mqtt_url"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Enter MQTT URL without Port"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
 
-              <b-form-invalid-feedback id="ttl-live-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
 
-            </b-form-group>
-          </validation-provider>
-          
-          <b-button type="submit" variant="primary">Submit</b-button>
-          <b-button class="ml-2" @click="resetForm()">Reset</b-button>
+        <!--MQTT Port-->
+        <b-col md="6">
+          <b-form-group>
+            <label>Enter MQTT Port:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required|integer"
+              name="Default: 1883"
+            >
+              <b-form-input
+                v-model="mqtt_port"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Default: 1883"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
 
-        </b-form>
-      </validation-observer>
-    </div>
+        <!--MQTT client id-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT Client ID:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required"
+              name="Enter Client ID"
+            >
+              <b-form-input
+                v-model="mqtt_client_id"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Enter Client ID"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
 
-    <hr />
+        <!--MQTT User: optional - Prüfen, ob User existiert-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT User:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules=""
+              name="Enter User"
+            >
+              <b-form-input
+                v-model="mqtt_user"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Enter User"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
 
-    <hr />
+        <!--MQTT password: optional - Prüfen, ob pw korrekt-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT Password:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules=""
+              name="Enter User"
+            >
+              <b-form-input
+                v-model="mqtt_password"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Enter User"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
 
-    <!--Save button erscheint nur, wenn connection erfolgreich war-->
-    <h5>
-      Don't forget to save the entered details.
-      <div>
-        <b-button @click="saveData" variant="primary">Save</b-button>
-      </div>
-    </h5>
-  </div>
+        <!--MQTT Topics mit regex prüfen-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT Topics:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required|regex:^$"
+              name="Comma-separated list of topics. Format: sensor_1,sensor_2,..."
+            >
+              <b-form-input
+                v-model="mqtt_topics"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Comma-separated list of topics. Format: sensor_1,sensor_2,..."
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
+
+        <!--MQTT intervall-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT Intervall:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required"
+              name="Interval to wait for the MQTT values (in seconds)"
+            >
+              <b-form-input
+                v-model="mqtt_intervall"
+                :state="errors.length > 0 ? false:null"
+                placeholder="Interval to wait for the MQTT values (in seconds)"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
+
+        <!--MQTT ttl-->
+        <b-col md="6">
+          <b-form-group>
+            <label>MQTT time to live:</label>
+            <validation-provider
+              #default="{ errors }"
+              rules="required|regex:^(([a-z]+_[1-9]+,)+)$"
+              name="How long the MQTT values are stored (in days)"
+            >
+              <b-form-input
+                v-model="mqtt_ttl"
+                :state="errors.length > 0 ? false:null"
+                placeholder="How long the MQTT values are stored (in days)"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </b-col>
+        
+        <!-- submit button -->
+        <b-col cols="12">
+          <b-button
+            variant="primary"
+            type="submit"
+            @click.prevent="validationForm"
+          >
+            Submit
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-form>
+  </validation-observer>
 </template>
-<!--
-  @Vue-Bootsrap DOC
-  https://bootstrap-vue.org/docs
 
-  @BoostrapDoc
-  https://getbootstrap.com/docs/4.1/getting-started/introduction/
-
-  @Validation
-  https://vee-validate.logaretm.com/v4/
- -->
 <script>
-/*Validation Import, extend = eigene Regeln*/
-/*ValidationObserver -> Link*/
-import { 
-  ValidationObserver,
-  ValidationProvider,
-  extend,
-  localize } from 'vee-validate';
-import { required } from 'vee-validate/dist/rules';
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+/*import { required } from 'vee-validate/dist/rules'*/
+import {
+  BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
+} from 'bootstrap-vue'
 
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
-
-
-/*Zahl muss > 0 sein */
+/*Zahl muss > 0 sein 
 extend('positive', value => {
   if (value > 0) {
     return true;
   }
   return 'Please choose a number bigger than 0';
 });
-
-/*Extend default required rule by error message*/
+*/
+/*Extend default required rule by error message
 extend('required', {
   ...required,
   message: 'This field is required'
 });
+*/
+const required = () => {
+
+};
+const confirmed = () => {
+  
+};
+
+const url = () => {
+
+};
+
+const integer = () => {
+
+};
+
 
 
 export default {
   name: "Settings",
 
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    BFormInput,
+    BFormGroup,
+    BForm,
+    BRow,
+    BCol,
+    BButton,
+  },
+
   data() {
     return {
-      settingsData: {},
-
-      form: {
-        ttl: null
-      }
-    };
+      settingsData: {
+        mqtt_url: '',
+        mqtt_port: '',
+        mqtt_client_id: '',
+        mqtt_user: '',
+        mqtt_password: '',
+        mqtt_topics: '',
+        mqtt_intervall: '',
+        mqtt_ttl: '',
+      },
+      required,
+      confirmed,
+      password,
+      email,
+      min,
+      integer,
+      url,
+      alpha,
+      between,
+      digits,
+      length,
+    }
   },
   methods: {
-    saveData() {
-      console.log(this.settingsData);
+    validate() {
+
     },
-
-
-    getValidationState({ dirty, validated, valid = null }) {
-      return dirty || validated ? valid : null;
+    validationForm() {
+      this.$refs.simpleRules.validate().then(success => {
+        if (success) {
+          // eslint-disable-next-line
+          alert('form submitted!')
+        }
+      })
     },
-
-
-    resetForm() {
-      this.form = {
-        ttl: null
-      };
-      this.$nextTick(() => {
-        this.$refs.observer.reset();
-      });
-    },
-
-
-    onSubmit() {
-      alert("Form submitted!");
-    }
-  }
-};
+  },
+}
 </script>
-
-<style lang="css" scoped>
-</style>
+ 
