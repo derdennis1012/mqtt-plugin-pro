@@ -49,29 +49,27 @@ class MQTTBackendFunctions {
             if($settingsData['mqtt_url'] != "" && $settingsData['mqtt_port'] != "" ){
                 try{
                     $mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
-                if ($mqtt->connect()) {
-                     //Verbindung erfolgreich
-                     //Topic festlegen
-                     
-                     $test = $mqtt->subscribeAndWaitForMessage('ferries', 0);
-                     $this->procmsg('ferries',$test);
-                     //Verbindung schließen
-                     $mqtt->close();
-     
-                 }else{
-                     trigger_error("Kann nicht durch 0 teilen", E_USER_ERROR);
-     
-                     exit(1);
-                     //Hier fehler behandeln
-                 }catch(Exeption $e){
-                     
-                 }
+                    if ($mqtt->connect()) {
+                         //Verbindung erfolgreich
+                         //Topic festlegen
+                         $test = $mqtt->subscribeAndWaitForMessage('ferries', 0);
+                         $this->procmsg('ferries',$test);
+                         //Verbindung schließen
+                         $mqtt->close();
+         
+                     }else{
+                         trigger_error("Kann nicht durch 0 teilen", E_USER_ERROR);
+         
+                         exit(1);
+                         //Hier fehler behandeln
+                     }
+                }catch(Exeption $e){
+
+                }
             }else{
-                exit(1)
+                exit(1);
             }
-           
         }else return;
-        
     }
 
     function procmsg($topic,$msg){
