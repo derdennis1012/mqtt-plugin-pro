@@ -14,7 +14,7 @@
               name="URL"
             >
               <b-form-input
-                v-model="mqtt_url"
+                v-model="settingsData.mqtt_url"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Enter MQTT URL without Port"
               />
@@ -34,7 +34,7 @@
               name="Port"
             >
               <b-form-input
-                v-model="mqtt_port"
+                v-model="settingsData.mqtt_port"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Default: 1883"
               />
@@ -53,7 +53,7 @@
               name="Client ID"
             >
               <b-form-input
-                v-model="mqtt_client_id"
+                v-model="settingsData.mqtt_client_id"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Enter Client ID"
               />
@@ -72,7 +72,7 @@
               name="User"
             >
               <b-form-input
-                v-model="mqtt_user"
+                v-model="settingsData.mqtt_user"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Enter User"
               />
@@ -91,7 +91,7 @@
               name="Password"
             >
               <b-form-input
-                v-model="mqtt_password"
+                v-model="settingsData.mqtt_password"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Enter User"
               />
@@ -106,11 +106,11 @@
             <label>MQTT Topics:</label>
             <validation-provider
               #default="{ errors }"
-              rules="required|regex:^([a-z]+_[1-9]+[0-9])$"
+              rules="required|regex:/^([a-z]+_[1-9]+[0-9]*(,[a-z]+_[1-9]+[0-9]*))$/"
               name="Topics"
             >
               <b-form-input
-                v-model="mqtt_topics"
+                v-model="settingsData.settingsDtata.mqtt_topics"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Comma-separated list of topics. Format: sensor_1,sensor_2,..."
               />
@@ -129,7 +129,7 @@
               name="Intervall"
             >
               <b-form-input
-                v-model="mqtt_intervall"
+                v-model="settingsData.mqtt_intervall"
                 :state="errors.length > 0 ? false:null"
                 placeholder="Interval to wait for the MQTT values (in seconds)"
               />
@@ -148,7 +148,7 @@
               name="TTL"
             >
               <b-form-input
-                v-model="mqtt_ttl"
+                v-model="settingsData.mqtt_ttl"
                 :state="errors.length > 0 ? false:null"
                 placeholder="How long the MQTT values are stored (in days)"
               />
@@ -175,7 +175,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 /*import { required } from 'vee-validate/dist/rules'*/
-import { url, required, integer, positive, regex } from "../validations/validations";
+import { url, required, integer, positive, regex, password } from "../validations/validations";
 import {
   BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
 } from 'bootstrap-vue'
