@@ -1,12 +1,11 @@
 .border-card {
-  border: 2px solid;
+  border: 1px solid;
   align-self: stretch;
 }
-.border-card-sm {
-  border: 1px solid !important;
+.border-card-lg {
+  border: 2px solid #1f3bd5 !important;
   align-self: stretch;
 }
-
 .badge-light-primary {
   color: #1f3bd5;
   background: rgba(51, 122, 190, 0.15);
@@ -60,4 +59,14 @@
   animation-fill-mode: none;
   animation-play-state: running;
   animation-name: progress-animation;
+}
+
+.btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn:active {
+  outline: none !important;
+  box-shadow: none !important;
 }

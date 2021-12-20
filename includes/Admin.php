@@ -58,6 +58,12 @@ class Admin {
      * @return void
      */
     public function plugin_page() {
-        echo '<div class="wrap"><div id="vue-admin-app"></div></div>';
+        $url = get_site_url();
+        $vue_atts = esc_attr( json_encode( [
+            'site_url' => $url
+        ] ) );
+        $content = '';
+        $content .= "<div class='wrap' data-pk-atts='{$vue_atts}' ><div id='vue-admin-app' ></div></div>";
+        echo $content;
     }
 }
