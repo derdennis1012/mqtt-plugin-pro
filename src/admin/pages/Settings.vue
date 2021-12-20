@@ -10,8 +10,8 @@
             <label>Enter MQTT URL:</label>
             <validation-provider
               #default="{ errors }"
-              rules="required|regex:^([0-9]{2}\.[0-9]{2}\.[0-9]{3}\.[0-9]{2})$"
-              name="Enter MQTT URL without Port"
+              rules="required|url"
+              name="URL"
             >
               <b-form-input
                 v-model="mqtt_url"
@@ -31,7 +31,7 @@
             <validation-provider
               #default="{ errors }"
               rules="required|integer"
-              name="Default: 1883"
+              name="Port"
             >
               <b-form-input
                 v-model="mqtt_port"
@@ -50,7 +50,7 @@
             <validation-provider
               #default="{ errors }"
               rules="required"
-              name="Enter Client ID"
+              name="Client ID"
             >
               <b-form-input
                 v-model="mqtt_client_id"
@@ -69,7 +69,7 @@
             <validation-provider
               #default="{ errors }"
               rules=""
-              name="Enter User"
+              name="User"
             >
               <b-form-input
                 v-model="mqtt_user"
@@ -87,8 +87,8 @@
             <label>MQTT Password:</label>
             <validation-provider
               #default="{ errors }"
-              rules=""
-              name="Enter User"
+              rules="password"
+              name="Password"
             >
               <b-form-input
                 v-model="mqtt_password"
@@ -106,8 +106,8 @@
             <label>MQTT Topics:</label>
             <validation-provider
               #default="{ errors }"
-              rules="required|regex:^$"
-              name="Comma-separated list of topics. Format: sensor_1,sensor_2,..."
+              rules="required|regex:^([a-z]+_[1-9]+[0-9])$"
+              name="Topics"
             >
               <b-form-input
                 v-model="mqtt_topics"
@@ -125,8 +125,8 @@
             <label>MQTT Intervall:</label>
             <validation-provider
               #default="{ errors }"
-              rules="required"
-              name="Interval to wait for the MQTT values (in seconds)"
+              rules="required|integer|positive"
+              name="Intervall"
             >
               <b-form-input
                 v-model="mqtt_intervall"
@@ -144,8 +144,8 @@
             <label>MQTT time to live:</label>
             <validation-provider
               #default="{ errors }"
-              rules="required|regex:^(([a-z]+_[1-9]+,)+)$"
-              name="How long the MQTT values are stored (in days)"
+              rules="required|integer|positive"
+              name="TTL"
             >
               <b-form-input
                 v-model="mqtt_ttl"
@@ -175,40 +175,10 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 /*import { required } from 'vee-validate/dist/rules'*/
+import { url, required, integer, positive, regex } from "../validations/validations";
 import {
   BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
 } from 'bootstrap-vue'
-
-/*Zahl muss > 0 sein 
-extend('positive', value => {
-  if (value > 0) {
-    return true;
-  }
-  return 'Please choose a number bigger than 0';
-});
-*/
-/*Extend default required rule by error message
-extend('required', {
-  ...required,
-  message: 'This field is required'
-});
-*/
-const required = () => {
-
-};
-const confirmed = () => {
-  
-};
-
-const url = () => {
-
-};
-
-const integer = () => {
-
-};
-
-
 
 export default {
   name: "Settings",
@@ -237,22 +207,15 @@ export default {
         mqtt_ttl: '',
       },
       required,
-      confirmed,
-      password,
-      email,
-      min,
-      integer,
       url,
-      alpha,
-      between,
-      digits,
-      length,
+      password,
+      integer,
+      positive,
+      regex,
     }
   },
   methods: {
-    validate() {
-
-    },
+    checkConncetion() {},
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
