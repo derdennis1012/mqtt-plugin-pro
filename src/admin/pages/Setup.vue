@@ -256,6 +256,16 @@
               </b-form-group>
             </div>
           </div>
+          <div class="">
+            <img :src="loaderImage" width="100%" style="margin: auto;" />
+            <div
+              class="text-center"
+              style="width: 30%; margin: auto; transform: translateY(-100px);"
+            >
+              <b-progress :value="20" class="color-progress"></b-progress>
+              <span class="text-muted text-center">Connecting to server</span>
+            </div>
+          </div>
         </validation-observer>
       </div>
       <b-button variant="primary" block @click="step = step + 1"
@@ -321,6 +331,7 @@ export default {
       step: 1,
       connectionWorks: false,
       image: require("../../assets/img/mqtt-pro-logo.png"),
+      loaderImage: require("../../assets/img/loader.png"),
       acceptedTerms: false,
       steps: {
         1: {
