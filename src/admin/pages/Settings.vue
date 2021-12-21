@@ -100,7 +100,7 @@
               <label>MQTT Topics:</label>
               <validation-provider
                 #default="{ errors }"
-                rules="required|regex: /^([a-z]+_[1-9]+[0-9])$/"
+                rules="required|regex:^(.*[^\/])$"
                 name="Topics"
               >
                 <b-form-input
