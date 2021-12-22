@@ -14,10 +14,12 @@ Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
 
+import "./style.css";
+import "./customStyle.css";
+
 import moment from "moment";
 
 Vue.prototype.moment = moment;
-
 
 Vue.config.productionTip = false;
 

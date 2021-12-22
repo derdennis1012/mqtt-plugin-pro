@@ -1,74 +1,74 @@
 <template>
-  <div class="app-settings container">
-    <div
-      class="
-        d-flex
-        align-items-center
-        justify-content-between
-        h-100
-        flex-column
-      "
-      v-if="step == 1"
-    >
-      <h1 class="text-center fat-heading mb-4 mt-4">Howdy my MQTT friend 👋</h1>
-
-      <h3 class="text-center mt-4">
-        We're so glad that you've downloaded our plugin!
-      </h3>
-      <b-img
-        class="text-center mt-3 mb-3"
-        :src="image"
-        fluid
-        alt="Responsive image"
-        center
-        width="270"
-      ></b-img>
-      <h4 class="text-center mt-4 mb-4">But enough of talking ...</h4>
-      <b-button variant="primary" block @click="step = 2"
-        >Let's get started 🚀</b-button
-      >
-      <h6 class="text-muted text-center mt-4">
-        No worries, we will guide you step by step through this!
-      </h6>
-    </div>
+  <div
+    class="app-settings container  h-100
+        fh"
+  >
     <div
       class="d-flex align-items-center justify-content-between"
       v-if="step > 1"
     >
-      <div @click="step = 2">
+      <div @click="step = 1">
+        <b-spinner
+          v-if="step == 1"
+          small
+          label="Small Spinner"
+          variant="primary"
+          class="mr-1"
+        ></b-spinner>
         <span
-          :class="`${step == 2 ? 'text-primary' : ''} ${
-            step > 1 ? '' : 'text-muted'
-          }`"
+          :class="
+            `${step == 1 ? 'text-primary' : ''} ${step > 1 ? '' : 'text-muted'}`
+          "
           >1. Info</span
         >
       </div>
       <div class="setup-line"></div>
-      <div @click="step = 3">
-        <span
-          :class="`${step == 3 ? 'text-primary' : ''} ${
-            step > 2 ? '' : 'text-muted'
-          }`"
+      <div @click="step = 2">
+        <b-spinner
+          v-if="step == 2"
+          small
+          label="Small Spinner"
+          variant="primary"
+          class="mr-1"
+        ></b-spinner
+        ><span
+          :class="
+            `${step == 2 ? 'text-primary' : ''} ${step > 2 ? '' : 'text-muted'}`
+          "
           >2. MQTT Broker</span
         >
       </div>
       <div class="setup-line"></div>
 
-      <div @click="step = 4">
-        <span
-          :class="`${step == 4 ? 'text-primary' : ''} ${
-            step > 3 ? '' : 'text-muted'
-          }`"
+      <div @click="step = 3">
+        <b-spinner
+          v-if="step == 3"
+          small
+          label="Small Spinner"
+          variant="primary"
+          class="mr-1"
+        ></b-spinner
+        ><span
+          :class="
+            `${step == 3 ? 'text-primary' : ''} ${step > 3 ? '' : 'text-muted'}`
+          "
           >3. Topics</span
         >
       </div>
       <div class="setup-line"></div>
 
-      <div @click="step = 5">
-        <span
-          :class="`${step == 5 ? 'text-primary' : ''} ${
-            step > 4 ? '' : 'text-muted'
-          }`"
+      <div @click="step = 4">
+        <b-spinner
+          v-if="step == 4"
+          small
+          label="Small Spinner"
+          variant="primary"
+          class="mr-1"
+        ></b-spinner
+        ><span
+          :class="
+            `${step == 4 ? 'text-primary' : ''} ${step > 4 ? '' : 'text-muted'}`
+          "
           >4. Misc</span
         >
       </div>
@@ -76,61 +76,24 @@
 
       <div>
         <span
-          :class="`${step == 6 ? 'text-primary' : ''} ${
-            step > 5 ? '' : 'text-muted'
-          }`"
+          :class="
+            `${step == 5 ? 'text-primary' : ''} ${step > 5 ? '' : 'text-muted'}`
+          "
           >5. Setup done</span
         >
       </div>
     </div>
-    <div
-      class="d-flex flex-column justify-content-between h-100"
+    <Step0 v-if="step == 0" :image="image" :data="{}" @nextStep="step++" />
+    <Step1 v-if="step == 1" :data="steps[1]" @nextStep="step++" />
+    <Step2
       v-if="step == 2"
-    >
-      <h1 class="mb-4 mt-4">1. Info</h1>
-
-      <b-button variant="primary" block @click="step = step + 1"
-        >Next Step</b-button
-      >
-    </div>
-    <div
-      class="d-flex flex-column justify-content-between h-100"
-      v-if="step == 3"
-    >
-      <h1 class="mb-4 mt-4">2. MQTT Broker</h1>
-
-      <b-button variant="primary" block @click="step = step + 1"
-        >Next Step</b-button
-      >
-    </div>
-    <div
-      class="d-flex flex-column justify-content-between h-100"
-      v-if="step == 4"
-    >
-      <h1 class="mb-4 mt-4">3. Topics</h1>
-
-      <b-button variant="primary" block @click="step = step + 1"
-        >Next Step</b-button
-      >
-    </div>
-    <div
-      class="d-flex flex-column justify-content-between h-100"
-      v-if="step == 5"
-    >
-      <h1 class="mb-4 mt-4">4. Misc</h1>
-
-      <b-button variant="primary" block @click="step = step + 1"
-        >Next Step</b-button
-      >
-    </div>
-    <div
-      class="d-flex flex-column justify-content-between h-100"
-      v-if="step == 6"
-    >
-      <h1 class="mb-4 mt-4">5. Setup done</h1>
-
-      <b-button variant="success" block>Finish</b-button>
-    </div>
+      :loaderImage="loaderImage"
+      :data="steps[2]"
+      @nextStep="step++"
+    />
+    <Step3 v-if="step == 3" :data="steps[3]" @nextStep="step++" />
+    <Step4 v-if="step == 4" :data="steps[4]" @nextStep="step++" />
+    <Step5 v-if="step == 5" :data="steps[5]" @nextStep="() => {}" />
   </div>
 </template>
 <!--
@@ -144,15 +107,48 @@
   https://vee-validate.logaretm.com/v4/
  -->
 <script>
-export default {
-  name: "Settings",
+import Step0 from "./SetupPageComponents/Step0.vue";
+import Step1 from "./SetupPageComponents/Step1.vue";
+import Step2 from "./SetupPageComponents/Step2.vue";
+import Step3 from "./SetupPageComponents/Step3.vue";
+import Step4 from "./SetupPageComponents/Step4.vue";
+import Step5 from "./SetupPageComponents/Step5.vue";
 
+export default {
+  name: "Setup",
+  components: {
+    Step0,
+    Step1,
+    Step2,
+    Step3,
+    Step4,
+    Step5,
+  },
   data() {
     return {
+      value: "",
       settingsData: {},
-      step: 1,
+      step: 0,
       connectionWorks: false,
       image: require("../../assets/img/mqtt-pro-logo.png"),
+      loaderImage: require("../../assets/img/loader.png"),
+      acceptedTerms: false,
+      steps: {
+        1: {
+          acceptedTerms: false,
+        },
+        2: {
+          url: "",
+          isSecured: null,
+          ClientID: "",
+          username: "",
+          password: "",
+          testPassed: false,
+          testRunning: false,
+          formPassed: false,
+        },
+        3: {},
+      },
     };
   },
   methods: {
@@ -164,5 +160,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-</style>
+<style lang="css" scoped></style>
