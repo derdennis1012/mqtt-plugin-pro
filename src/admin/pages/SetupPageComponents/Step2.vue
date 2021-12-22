@@ -16,11 +16,9 @@
         >
         <div class="d-flex align-items-center justify-content-between">
           <div
-            :class="
-              `shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
-                data.isSecured ? 'border-primary border-card-lg' : ''
-              } w-100`
-            "
+            :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
+              data.isSecured ? 'border-primary border-card-lg' : ''
+            } w-100`"
             @click="data.isSecured = true"
           >
             <div class="d-flex align-items-center">
@@ -33,11 +31,9 @@
             </div>
           </div>
           <div
-            :class="
-              `shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
-                data.isSecured == false ? 'border-primary border-card-lg' : ''
-              } w-100`
-            "
+            :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
+              data.isSecured == false ? 'border-primary border-card-lg' : ''
+            } w-100`"
             @click="data.isSecured = false"
           >
             <div class="d-flex align-items-center">
@@ -167,10 +163,10 @@
           </div>
         </div>
         <div v-if="false" class="">
-          <img :src="loaderImage" width="100%" style="margin: auto;" />
+          <img :src="loaderImage" width="100%" style="margin: auto" />
           <div
             class="text-center"
-            style="width: 30%; margin: auto; transform: translateY(-100px);"
+            style="width: 30%; margin: auto; transform: translateY(-100px)"
           >
             <b-progress :value="20" class="color-progress"></b-progress>
             <span class="text-muted text-center">Connecting to server</span>
