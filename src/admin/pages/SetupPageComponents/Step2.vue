@@ -59,7 +59,7 @@
               Custom port (Default 1883)
             </b-form-checkbox>
           </div>
-          <div class="shadow rounded bg-white px-3 pt-3 pb-1">
+          <div class="shadow rounded-lg bg-white px-3 pt-3 pb-1">
             <div>
               <b-form>
                 <b-row>
@@ -86,7 +86,7 @@
                       <validation-provider
                         #default="{ errors }"
                         name="URL/IP"
-                        rules="required|url"
+                        rules="required"
                       >
                         <b-form-input
                           @input="checkForm()"
@@ -182,14 +182,17 @@
             >
           </div>
         </div>
-        <div v-if="false" class="">
-          <img :src="loaderImage" width="100%" style="margin: auto" />
-          <div
-            class="text-center"
-            style="width: 30%; margin: auto; transform: translateY(-100px)"
-          >
-            <b-progress :value="20" class="color-progress"></b-progress>
-            <span class="text-muted text-center">Connecting to server</span>
+        <div v-if="testRunning" class="">
+          <div class="shadow-lg bg-white px-3 pt-3 pb-1">
+            <h4 class="text-center">Checking connection</h4>
+            <img :src="loaderImage" width="100%" style="margin: auto" />
+            <div
+              class="text-center"
+              style="width: 30%; margin: auto; transform: translateY(-100px)"
+            >
+              <b-progress :value="20" class="color-progress"></b-progress>
+              <span class="text-muted text-center">Connecting to server</span>
+            </div>
           </div>
         </div>
       </validation-observer>

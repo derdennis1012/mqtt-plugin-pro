@@ -40,6 +40,18 @@ class MQTTFunctions extends WP_REST_Controller {
         );
         register_rest_route(
             $this->namespace,
+            '/' . $this->rest_base .'/test-connection-without',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'check_connection_without' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
             '/' . $this->rest_base .'/get',
             [
                 [
@@ -135,7 +147,31 @@ class MQTTFunctions extends WP_REST_Controller {
 
         return $response;
     }
+    public function check_connection_without( $request ) {
+        $conncected = null;
+        $settingsData = [
+            'mqtt_url' => $request['mqtt_pro_mqtt_url'],
+            'mqtt_port' => $request['mqtt_pro_mqtt_port'],
+            'mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
+            'mqtt_user' => $request['mqtt_pro_mqtt_user'],
+            'mqtt_password' => $request['mqtt_pro_mqtt_password']
+        ];
+            $mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+            if ($mqtt->connect()) {
+                $mqtt->close();
+                $conncected = true;
 
+            }else{
+                $conncected = false;
+            }
+        
+        $respObj = [
+            'connected' => $conncected
+        ];
+        $response = rest_ensure_response( $respObj );
+
+        return $response;
+    }
 
     public function get_items_permissions_check( $request ) {
         return true;
