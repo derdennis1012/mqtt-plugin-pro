@@ -70,3 +70,8 @@
   outline: none !important;
   box-shadow: none !important;
 }
+
+.form-group legend {
+  font-size: 0.7rem !important;
+  color: #646970 !important;
+}

@@ -56,110 +56,130 @@
               inline
               v-model="data.isCustomPort"
             >
-              Custom port
+              Custom port (Default 1883)
             </b-form-checkbox>
           </div>
-          <div>
-            <b-form>
+          <div class="shadow rounded bg-white px-3 pt-3 pb-1">
+            <div>
+              <b-form>
+                <b-row>
+                  <b-col :md="`${data.isCustomPort ? 9 : 12}`">
+                    <b-form-group label="MQTT Broker URL">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="URL/IP"
+                        rules="required|url"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="data.url"
+                          label="Test"
+                          :state="errors.length > 0 ? false : null"
+                          placeholder="URL / IP of the broker"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="3" v-if="data.isCustomPort">
+                    <b-form-group label="Port">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="URL/IP"
+                        rules="required|url"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="data.port"
+                          type="number"
+                          :state="errors.length > 0 ? false : null"
+                          placeholder="Port"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </div>
+            <div v-if="data.isSecured == true">
+              <b-form>
+                <b-row>
+                  <b-col md="6">
+                    <b-form-group label="Username:">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="Username"
+                        rules="required"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="data.username"
+                          :state="errors.length > 0 ? false : null"
+                          placeholder="Username"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="6">
+                    <b-form-group label="Password:">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="Password"
+                        rules="required"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="data.password"
+                          :state="errors.length > 0 ? false : null"
+                          type="password"
+                          placeholder="Password"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </div>
+            <div>
               <b-row>
-                <b-col :md="`${data.isCustomPort ? 9 : 12}`">
-                  <b-form-group>
+                <b-col md="9">
+                  <b-form-group label="ClientID:">
                     <validation-provider
                       #default="{ errors }"
-                      name="URL/IP"
-                      rules="required|url"
-                    >
-                      <b-form-input
-                        @input="checkForm()"
-                        v-model="data.url"
-                        label="Test"
-                        :state="errors.length > 0 ? false : null"
-                        placeholder="URL / IP of the broker"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
-                </b-col>
-                <b-col md="3" v-if="data.isCustomPort">
-                  <b-form-group>
-                    <b-form-input
-                      @input="checkForm()"
-                      v-model="data.port"
-                      type="number"
-                      placeholder="Port"
-                    />
-                  </b-form-group>
-                </b-col>
-              </b-row>
-            </b-form>
-          </div>
-          <div v-if="data.isSecured == true">
-            <b-form>
-              <b-row>
-                <b-col md="6">
-                  <b-form-group>
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Username"
+                      name="ClientID"
                       rules="required"
                     >
                       <b-form-input
                         @input="checkForm()"
-                        v-model="data.username"
+                        v-model="data.ClientID"
                         :state="errors.length > 0 ? false : null"
-                        placeholder="Username"
+                        type="text"
+                        placeholder="ClientID"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
-                <b-col md="6">
-                  <b-form-group>
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Password"
-                      rules="required"
+                <b-col md="3">
+                  <div class="mt-4">
+                    <b-button block variant="primary" @click="generateID()"
+                      >Generate ID</b-button
                     >
-                      <b-form-input
-                        @input="checkForm()"
-                        v-model="data.password"
-                        :state="errors.length > 0 ? false : null"
-                        type="password"
-                        placeholder="Password"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
+                  </div>
                 </b-col>
               </b-row>
-            </b-form>
-          </div>
-          <div>
-            <b-row>
-              <b-col md="9">
-                <b-form-group>
-                  <validation-provider
-                    #default="{ errors }"
-                    name="ClientID"
-                    rules="required"
-                  >
-                    <b-form-input
-                      @input="checkForm()"
-                      v-model="data.ClientID"
-                      :state="errors.length > 0 ? false : null"
-                      type="text"
-                      placeholder="ClientID"
-                    />
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </validation-provider>
-                </b-form-group>
-              </b-col>
-              <b-col md="3">
-                <b-button block variant="primary" @click="generateID()"
-                  >Generate ID</b-button
-                >
-              </b-col>
-            </b-row>
+            </div>
+            <b-button
+              variant="success"
+              @click="checkMQTTConnection"
+              :disabled="!inputPassed"
+              block
+              class="mt-1 mb-1"
+              >Check MQTT connection</b-button
+            >
           </div>
         </div>
         <div v-if="false" class="">
@@ -173,14 +193,6 @@
           </div>
         </div>
       </validation-observer>
-      <b-button
-        variant="success"
-        @click="checkMQTTConnection"
-        :disabled="!inputPassed"
-        block
-        class="mt-1"
-        >Check MQTT connection</b-button
-      >
     </div>
     <b-button variant="primary" block @click="checkNextStep"
       >Next Step</b-button

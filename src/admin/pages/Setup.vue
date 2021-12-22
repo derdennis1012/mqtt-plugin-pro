@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="app-settings container  h-100
-        fh"
-  >
+  <div class="app-settings container h-100 fh">
     <div
       class="d-flex align-items-center justify-content-between"
       v-if="step > 1"
@@ -16,9 +13,9 @@
           class="mr-1"
         ></b-spinner>
         <span
-          :class="
-            `${step == 1 ? 'text-primary' : ''} ${step > 1 ? '' : 'text-muted'}`
-          "
+          :class="`${step == 1 ? 'text-primary' : ''} ${
+            step > 1 ? '' : 'text-muted'
+          }`"
           >1. Info</span
         >
       </div>
@@ -32,9 +29,9 @@
           class="mr-1"
         ></b-spinner
         ><span
-          :class="
-            `${step == 2 ? 'text-primary' : ''} ${step > 2 ? '' : 'text-muted'}`
-          "
+          :class="`${step == 2 ? 'text-primary' : ''} ${
+            step > 2 ? '' : 'text-muted'
+          }`"
           >2. MQTT Broker</span
         >
       </div>
@@ -49,9 +46,9 @@
           class="mr-1"
         ></b-spinner
         ><span
-          :class="
-            `${step == 3 ? 'text-primary' : ''} ${step > 3 ? '' : 'text-muted'}`
-          "
+          :class="`${step == 3 ? 'text-primary' : ''} ${
+            step > 3 ? '' : 'text-muted'
+          }`"
           >3. Topics</span
         >
       </div>
@@ -66,9 +63,9 @@
           class="mr-1"
         ></b-spinner
         ><span
-          :class="
-            `${step == 4 ? 'text-primary' : ''} ${step > 4 ? '' : 'text-muted'}`
-          "
+          :class="`${step == 4 ? 'text-primary' : ''} ${
+            step > 4 ? '' : 'text-muted'
+          }`"
           >4. Misc</span
         >
       </div>
@@ -76,9 +73,9 @@
 
       <div>
         <span
-          :class="
-            `${step == 5 ? 'text-primary' : ''} ${step > 5 ? '' : 'text-muted'}`
-          "
+          :class="`${step == 5 ? 'text-primary' : ''} ${
+            step > 5 ? '' : 'text-muted'
+          }`"
           >5. Setup done</span
         >
       </div>
@@ -143,11 +140,15 @@ export default {
           ClientID: "",
           username: "",
           password: "",
+          port: 1883,
           testPassed: false,
           testRunning: false,
           formPassed: false,
         },
-        3: {},
+        3: {
+          topics: ["test", "test2"],
+          testPassed: false,
+        },
       },
     };
   },
