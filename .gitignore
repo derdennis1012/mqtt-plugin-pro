@@ -1,6 +1,6 @@
 node_modules
 package-lock.json
-assests/css/admin.css
-assests/css/frontend.css
-assests/js/frontend.js
-assests/js/admin.js
+assets/css/admin.css
+assets/css/frontend.css
+assets/js/frontend.js
+assets/js/admin.js
