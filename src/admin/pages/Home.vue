@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import DataTable from '../components/DataTable.vue'
+import DataTable from '../components/BootstrapVueDatatable.vue'
 export default {
 
   name: 'Home',
