@@ -1,6 +1,9 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <h1 class="mb-4 mt-4">3. Topics</h1>
+    <div class="d-flex align-items-center justify-content-between">
+          <h5>Liste der Topics:</h5>
+    </div>
     <div>
       <div
         class="shadow rounded bg-white m-1"
@@ -10,7 +13,10 @@
         {{ item }}
       </div>
     </div>
-    <b-button @click="data.topics.push('hello122')"> Add </b-button>
+    <div>
+      <b-form-input v-model="text" placeholder="Topic hinzufügen"></b-form-input>
+    </div>
+    <b-button @click="data.topics.push(text)"> Add </b-button>
     <div></div>
     <b-button variant="primary" block @click="checkNextStep"
       >Next Step</b-button
@@ -29,6 +35,7 @@ export default {
   data() {
     return {
       dataObj: {},
+      text: ''
     };
   },
   methods: {

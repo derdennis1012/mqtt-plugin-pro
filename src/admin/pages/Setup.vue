@@ -146,7 +146,7 @@ export default {
           formPassed: false,
         },
         3: {
-          topics: ["test", "test2"],
+          topics: [],
           testPassed: false,
         },
       },
