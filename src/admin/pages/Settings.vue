@@ -53,6 +53,7 @@
             v-b-tooltip.hover.right
             title="e.g. my_mqtt_client"
             >
+              <!--ToDo: ID & password & port => SetupPageComp/step2.vue-->
               <label>MQTT Client ID:</label>
               <validation-provider
                 #default="{ errors }"
@@ -115,16 +116,17 @@
             v-b-tooltip.hover.right
             title="Format: sensor_1,sensor_2,..."
             >
+              <!--ToDo: Succes & Error rechts von check connection-->
               <label>MQTT Topics:</label>
               <validation-provider
                 #default="{ errors }"
-                rules="required|regex:^(.*[^\/])$"
+                rules="required|regex:^(.*[^\/\s])$"
                 name="Topics"
               >
                 <b-form-input
                   v-model="settingsData.mqtt_topics"
                   :state="errors.length > 0 ? false : null"
-                  placeholder="Comma-separated list of Topics."
+                  placeholder="Comma separated list of Topics"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -181,7 +183,7 @@
               variant="primary"
               type="submit"
               @click.prevent="validationForm"
-              :disabled="isDisabled"
+              :disabled="!testPassed"
             >
               Save 
             </b-button>
@@ -199,13 +201,13 @@
           </b-card-text>
             <b-button @click="checkConnection" variant="primary">Check connection</b-button>
         </b-card>
-      </div>
+    </div>
       
 
       <div class="mt-4">
-        <b-card-group>
-          <b-card img-src="src\assets\img\404.png" img-alt="Card image" img-left class="mb-3">
-          </b-card>
+        <b-card-group v-if="testPassed === false">
+          <!--b-card img-src="src\assets\img\404.png" img-alt="Card image" img-left class="mb-3">
+          </b-card-->
           <b-card bg-variant="danger" text-variant="white" header="Error!" class="text-center">
               <b-card-text>Unfortunately, your connection doesn't work! Please check your settings</b-card-text>
           </b-card>
@@ -216,7 +218,7 @@
 
 
       <div>
-        <b-card-group>
+        <b-card-group v-if="testPassed === true">
           <b-card bg-variant="success" text-variant="white" header="It works!" class="text-center">
               <b-card-text>Everything works fine, don't forget to save your information with the button above!</b-card-text>
           </b-card>
@@ -252,6 +254,7 @@ export default {
       integer,
       positive,
       regex,
+      testPassed:null
     };
   },
 
@@ -264,7 +267,11 @@ export default {
         }
       })
     },
-    checkConnection() {
+    checkConnection(succes=true) {
+      if(succes){
+        this.testPassed=true
+      } else
+        this.testPassed=false
     },
   },
   computed:{
