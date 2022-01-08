@@ -3,10 +3,7 @@
     <div>
       <h1 class="mb-4 mt-4">2. MQTT Broker</h1>
     </div>
-    <div
-      class="h-100 justify-content-top"
-      v-if="data.testPassed == false && data.testRunning == false"
-    >
+    <div class="h-100 justify-content-top">
       <validation-observer ref="simpleRules">
         <div class="d-flex align-items-center justify-content-between">
           <h5>Security</h5>
@@ -46,7 +43,9 @@
             </div>
           </div>
         </div>
-        <div v-if="data.isSecured != null">
+        <div
+          v-if="data.isSecured != null && (!testRunning || testResult !== null)"
+        >
           <div class="d-flex align-items-center justify-content-between mt-1">
             <h5>The Broker</h5>
             <b-form-checkbox
@@ -195,6 +194,11 @@
             </div>
           </div>
         </div>
+        <div v-if="testResult !== null" class="">
+          <div class="shadow-lg bg-white px-3 pt-3 pb-1">
+            <h4 class="text-center">{{ testResult }}</h4>
+          </div>
+        </div>
       </validation-observer>
     </div>
     <b-button variant="primary" block @click="checkNextStep"
@@ -203,6 +207,8 @@
   </div>
 </template>
 <script>
+var elmnts = document.querySelectorAll("[data-pk-atts]");
+
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import { url, required, ip } from "../../validations/validations";
 export default {
@@ -223,12 +229,15 @@ export default {
   },
   data() {
     return {
+      elements: elmnts,
       url,
       required,
       ip,
       renderComponent: false,
       inputPassed: false,
       testRunning: false,
+      found: null,
+      testResult: null,
     };
   },
   methods: {
@@ -263,14 +272,30 @@ export default {
     },
     async checkMQTTConnection() {
       var self = this;
+      self.testRunning = true;
+      var settingsData = {
+        mqtt_pro_mqtt_url: self.data.url,
+        mqtt_pro_mqtt_port: `${!isNaN(self.data.port) ? self.data.port : 1883}`,
+        mqtt_client_id: self.data.ClientID,
+        mqtt_user: self.data.username,
+        mqtt_password: self.data.password,
+        mqtt_pro_mqtt_is_secured: "false",
+      };
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "Vue POST Request Example" }),
+        body: JSON.stringify(settingsData),
       };
-      fetch("https://jsonplaceholder.typicode.com/posts", requestOptions)
+      fetch(
+        self.found.site_url +
+          "/wp-json/myapp/v1/mqtt-functions/test-connection-without",
+        requestOptions
+      )
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          self.testRunning = false;
+          self.testResult = data.connected;
+        });
     },
     async checkForm() {
       var self = this;
@@ -298,6 +323,16 @@ export default {
   created() {
     var self = this;
     self.dataObj = self.data;
+    var fElment;
+    var self = this;
+
+    for (var i = 0; i < self.elements.length; i++) {
+      var element = self.elements[i];
+      var elmt = JSON.parse(element.getAttribute("data-pk-atts"));
+
+      fElment = elmt;
+    }
+    self.found = fElment;
   },
 };
 </script>
