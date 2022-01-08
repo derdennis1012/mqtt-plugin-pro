@@ -12,24 +12,25 @@ export default {
     BootstrapVueDatatable,
   },
 
-  data: () => ({
-    posts: [
-      {
-        name: "hello",
-        id: 1,
-        date: "25-12-2021",
-      },
-      {
-        name: "bernd",
-        id: 2,
-        date: "24-12-2021",
-      },
-      {
-        name: "dickerson",
-        id: 3,
-        date: "26-12-2021",
-      },
-    ],
-  }),
+  data() {
+    return {
+      fields: [
+        { key: "id", label: "ID", type: "number"},
+        { key: "topic", label: "Topic", type: "text" },
+        { key: "recordCreated", label: "RecordCreated", type: "date" },
+      ],
+       items: [
+          { id: 40, topic: "hallo", recordCreated: "22-10-2020"},
+          { id: 40, topic: "tschüss", recordCreated: "23-10-2020"},
+          { id: 40, topic: "byebye", recordCreated: "24-10-2020"},
+        ]
+    };
+  }
+
+
+
+
+
+
 };
 </script>
