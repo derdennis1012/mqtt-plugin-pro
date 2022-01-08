@@ -43,7 +43,7 @@ class MQTTFunctions extends WP_REST_Controller {
             '/' . $this->rest_base .'/test-connection-without',
             [
                 [
-                    'methods'             => \WP_REST_Server::READABLE,
+                    'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'check_connection_without' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
                     'args'                => $this->get_collection_params(),
@@ -131,7 +131,7 @@ class MQTTFunctions extends WP_REST_Controller {
             'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
             'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
         ];
-            $mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+            $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
             if ($mqtt->connect()) {
                 $mqtt->close();
                 $conncected = true;
@@ -154,9 +154,12 @@ class MQTTFunctions extends WP_REST_Controller {
             'mqtt_port' => $request['mqtt_pro_mqtt_port'],
             'mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
             'mqtt_user' => $request['mqtt_pro_mqtt_user'],
-            'mqtt_password' => $request['mqtt_pro_mqtt_password']
+            'mqtt_password' => $request['mqtt_pro_mqtt_password'],
+            'is_secured' => $request['mqtt_pro_mqtt_is_secured']
+
         ];
-            $mqtt = new phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+            try{
+                $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
             if ($mqtt->connect()) {
                 $mqtt->close();
                 $conncected = true;
@@ -164,6 +167,9 @@ class MQTTFunctions extends WP_REST_Controller {
             }else{
                 $conncected = false;
             }
+        }catch(Exeption $e){
+
+        }
         
         $respObj = [
             'connected' => $conncected

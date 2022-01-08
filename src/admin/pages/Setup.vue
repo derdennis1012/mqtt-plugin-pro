@@ -125,7 +125,7 @@ export default {
     return {
       value: "",
       settingsData: {},
-      step: 2,
+      step: 0,
       connectionWorks: false,
       image: require("../../assets/img/mqtt-pro-logo.png"),
       loaderImage: require("../../assets/img/loader.png"),
