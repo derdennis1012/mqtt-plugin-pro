@@ -34,7 +34,6 @@ class MQTTFunctions extends WP_REST_Controller {
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => [ $this, 'check_connection' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
-                    'args'                => $this->get_collection_params(),
                 ]
             ]
         );
@@ -46,7 +45,6 @@ class MQTTFunctions extends WP_REST_Controller {
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'check_connection_without' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
-                    'args'                => $this->get_collection_params(),
                 ]
             ]
         );
@@ -58,7 +56,17 @@ class MQTTFunctions extends WP_REST_Controller {
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'get_mqtt_values' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
-                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base .'/delete/(?P<id>\d+)',
+            [
+                [
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'delete_mqtt_value' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
                 ]
             ]
         );
@@ -70,7 +78,6 @@ class MQTTFunctions extends WP_REST_Controller {
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'get_mqtt_value_latest' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
-                    'args'                => $this->get_collection_params(),
                 ]
             ]
         );
@@ -82,7 +89,6 @@ class MQTTFunctions extends WP_REST_Controller {
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => [ $this, 'get_mqtt_value_avg' ],
                     'permission_callback' => [ $this, 'get_items_permissions_check' ],
-                    'args'                => $this->get_collection_params(),
                 ]
             ]
         );
@@ -106,11 +112,26 @@ class MQTTFunctions extends WP_REST_Controller {
         $res = $this->wpdb->get_results($sql,ARRAY_A);
         $respObj = [
             'res'=>$res[0]
+
         ];
         $response = rest_ensure_response( $respObj  );
 
         return $response;
     }
+
+
+    public function delete_mqtt_value( $request ){
+        $id = $request['id'];
+        $sql = "DELETE FROM wp_mqtt_pro_data WHERE ID =".$id."";
+        $res = $this->wpdb->query($sql);
+        $respObj = [
+            'res'=>'ok'
+        ];
+        $response = rest_ensure_response( $respObj  );
+
+        return $response;
+    }
+
     public function get_mqtt_value_avg( $request ){
         $topic = $request['topic'];
         $sql = "SELECT AVG(CAST(DataSet AS DECIMAL(10,2) )) AS AVG FROM wordpress.wp_mqtt_pro_data WHERE topic = '".$topic."' ORDER BY RecordCreated DESC";
@@ -187,7 +208,5 @@ class MQTTFunctions extends WP_REST_Controller {
         return true;
     }
 
-    public function get_collection_params() {
-        return [];
-    }
+  
 }
