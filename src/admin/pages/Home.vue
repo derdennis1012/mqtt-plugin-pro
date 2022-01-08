@@ -1,17 +1,17 @@
 <template>
   <div class="home">
     <span>{{ msg }}</span>
-    <DataTable></DataTable>
+    <BootstrapVueDatatable></BootstrapVueDatatable>
   </div>
 </template>
 
 <script>
-import DataTable from '../components/DataTable.vue'
+import BootstrapVueDatatable from '../components/BootstrapVueDatatable.vue'
 export default {
 
   name: 'Home',
   components:{
-    DataTable
+    BootstrapVueDatatable
     },
   data () {
     return {
