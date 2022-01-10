@@ -4,7 +4,7 @@
       <h1 class="mb-4 mt-4">3. Topics</h1>
       <div class="d-flex align-items-center justify-content-between"></div>
       <div>
-        <h5>Liste der Topics:</h5>
+        <h5>List of Topics:</h5>
 
         <b-row>
           <b-col sm="9">
@@ -68,7 +68,7 @@ export default {
   methods: {
     addItem() {
       var self = this;
-      if (self.text == "") alert("Bisch du behindert?");
+      if (self.text == "") alert("Topic can not be empty!");
       else {
         self.data.topics.push(self.text);
         self.text = "";
