@@ -1,7 +1,13 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <div>
-      <h1 class="mb-4 mt-4">3. Topics</h1>
+      <h1 class="mb-4 mt-4">
+        <span @click="$emit('goBack')">
+          <font-awesome-icon
+            class="mr-3"
+            :icon="['fal', 'chevron-left']" /></span
+        >3. Topics
+      </h1>
       <div class="d-flex align-items-center justify-content-between"></div>
       <div>
         <h5>List of Topics:</h5>
@@ -25,7 +31,7 @@
           </b-col>
         </b-row>
         <div>
-          <ul class="list-group">
+          <ul class="list-group scroll-it">
             <li
               class="list-group-item my-2 border rounded"
               v-for="(item, key) in data.topics"
@@ -44,7 +50,11 @@
         </div>
       </div>
     </div>
-    <b-button variant="primary" block @click="checkNextStep"
+    <b-button
+      variant="primary"
+      block
+      @click="checkNextStep"
+      :disabled="(data.topics || []).length < 1"
       >Next Step</b-button
     >
   </div>

@@ -4,7 +4,7 @@
       class="d-flex align-items-center justify-content-between"
       v-if="step > 1"
     >
-      <div @click="step = 1">
+      <div>
         <b-spinner
           v-if="step == 1"
           small
@@ -20,7 +20,7 @@
         >
       </div>
       <div class="setup-line"></div>
-      <div @click="step = 2">
+      <div>
         <b-spinner
           v-if="step == 2"
           small
@@ -37,7 +37,7 @@
       </div>
       <div class="setup-line"></div>
 
-      <div @click="step = 3">
+      <div>
         <b-spinner
           v-if="step == 3"
           small
@@ -54,7 +54,7 @@
       </div>
       <div class="setup-line"></div>
 
-      <div @click="step = 4">
+      <div>
         <b-spinner
           v-if="step == 4"
           small
@@ -81,16 +81,39 @@
       </div>
     </div>
     <Step0 v-if="step == 0" :image="image" :data="{}" @nextStep="step++" />
-    <Step1 v-if="step == 1" :data="steps[1]" @nextStep="step++" />
+    <Step1
+      v-if="step == 1"
+      :data="steps[1]"
+      @nextStep="step++"
+      @goBack="step--"
+    />
     <Step2
       v-if="step == 2"
       :loaderImage="loaderImage"
       :data="steps[2]"
       @nextStep="step++"
+      :errorImage="errorImage"
+      :successImage="successImage"
+      @goBack="step--"
     />
-    <Step3 v-if="step == 3" :data="steps[3]" @nextStep="step++" />
-    <Step4 v-if="step == 4" :data="steps[4]" @nextStep="step++" />
-    <Step5 v-if="step == 5" :data="steps[5]" @nextStep="() => {}" />
+    <Step3
+      v-if="step == 3"
+      :data="steps[3]"
+      @nextStep="step++"
+      @goBack="step--"
+    />
+    <Step4
+      v-if="step == 4"
+      :data="steps[4]"
+      @nextStep="step++"
+      @goBack="step--"
+    />
+    <Step5
+      v-if="step == 5"
+      :data="steps[5]"
+      @nextStep="() => {}"
+      @goBack="step--"
+    />
   </div>
 </template>
 <!--
@@ -125,14 +148,18 @@ export default {
     return {
       value: "",
       settingsData: {},
-      step: 3,
+      step: 4,
       connectionWorks: false,
       image: require("../../assets/img/mqtt-pro-logo.png"),
       loaderImage: require("../../assets/img/loader.png"),
+      errorImage: require("../../assets/img/500.png"),
+      successImage: require("../../assets/img/200.png"),
+
       acceptedTerms: false,
       steps: {
         1: {
           acceptedTerms: false,
+          testPassed: false,
         },
         2: {
           url: "",
@@ -147,6 +174,12 @@ export default {
         },
         3: {
           topics: [],
+          testPassed: false,
+        },
+        4: {
+          ttl: null,
+          keepData: null,
+          interval: null,
           testPassed: false,
         },
       },

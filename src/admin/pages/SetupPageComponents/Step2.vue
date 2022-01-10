@@ -1,7 +1,13 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <div>
-      <h1 class="mb-4 mt-4">2. MQTT Broker</h1>
+      <h1 class="mb-4 mt-4">
+        <span @click="$emit('goBack')">
+          <font-awesome-icon
+            class="mr-3"
+            :icon="['fal', 'chevron-left']" /></span
+        >2. MQTT Broker
+      </h1>
     </div>
     <div class="h-100 justify-content-top">
       <validation-observer ref="simpleRules">
@@ -44,7 +50,7 @@
           </div>
         </div>
         <div
-          v-if="data.isSecured != null && (!testRunning || testResult !== null)"
+          v-if="data.isSecured != null && !testRunning && testResult == null"
         >
           <div class="d-flex align-items-center justify-content-between mt-1">
             <h5>The Broker</h5>
@@ -54,6 +60,7 @@
               switch
               inline
               v-model="data.isCustomPort"
+              @change="checkPort(data.isCustomPort)"
             >
               Custom port (Default 1883)
             </b-form-checkbox>
@@ -185,23 +192,53 @@
           <div class="shadow-lg bg-white px-3 pt-3 pb-1">
             <h4 class="text-center">Checking connection</h4>
             <img :src="loaderImage" width="100%" style="margin: auto" />
+
             <div
               class="text-center"
               style="width: 30%; margin: auto; transform: translateY(-100px)"
             >
-              <b-progress :value="20" class="color-progress"></b-progress>
+              <div class="text-center mb-1">
+                <b-spinner label="Spinning"></b-spinner>
+              </div>
               <span class="text-muted text-center">Connecting to server</span>
             </div>
           </div>
         </div>
-        <div v-if="testResult !== null" class="">
-          <div class="shadow-lg bg-white px-3 pt-3 pb-1">
-            <h4 class="text-center">{{ testResult }}</h4>
+        <div v-if="testResult !== null">
+          <div
+            :class="`shadow-lg rounded ${
+              testResult ? 'bg-success' : 'bg-danger'
+            } px-3 pt-3 pb-1 text-white`"
+          >
+            <h4 :class="`text-center`">
+              Connection {{ testResult ? "successful" : "failed" }}
+            </h4>
+            <h6 v-if="!testResult" class="text-center">
+              Maybe you've unplugged your device?
+            </h6>
+            <img
+              :src="testResult ? successImage : errorImage"
+              width="100%"
+              style="margin: auto"
+            />
           </div>
         </div>
+        <b-button
+          variant="outline-primary"
+          class="mt-2"
+          block
+          v-if="testResult !== null"
+          @click="retryConnection"
+        >
+          {{ !testResult ? "Plugged back in? - " : "" }} Retry
+        </b-button>
       </validation-observer>
     </div>
-    <b-button variant="primary" block @click="checkNextStep"
+    <b-button
+      variant="primary"
+      block
+      @click="checkNextStep"
+      :disabled="!testResult && !testResult"
       >Next Step</b-button
     >
   </div>
@@ -219,6 +256,14 @@ export default {
       required: true,
     },
     loaderImage: {
+      type: String,
+      required: true,
+    },
+    errorImage: {
+      type: String,
+      required: true,
+    },
+    successImage: {
       type: String,
       required: true,
     },
@@ -241,6 +286,14 @@ export default {
     };
   },
   methods: {
+    retryConnection() {
+      var self = this;
+      self.data.testPassed = false;
+      self.testResult = null;
+    },
+    checkPort(status) {
+      if (!status) this.data.port = 1883;
+    },
     nextStep() {
       this.$emit("nextStep");
     },
@@ -286,27 +339,44 @@ export default {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settingsData),
       };
-      fetch(
-        self.found.site_url +
-          "/wp-json/myapp/v1/mqtt-functions/test-connection-without",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          self.testRunning = false;
-          self.testResult = data.connected;
-        });
+
+      const { timeout = 8000 } = requestOptions;
+      const controller = new AbortController();
+      var response;
+
+      try {
+        const id = setTimeout(() => controller.abort(), timeout);
+        response = await fetch(
+          self.found.site_url +
+            "/wp-json/myapp/v1/mqtt-functions/test-connection-without",
+          {
+            ...requestOptions,
+            signal: controller.signal,
+          }
+        );
+        clearTimeout(id);
+      } catch (e) {
+        self.testResult = false;
+      }
+      if (response) {
+        var data = await response.json();
+
+        self.testResult = data.connected;
+        if (self.testResult) self.data.testPassed = true;
+      }
+      self.testRunning = false;
     },
     async checkForm() {
       var self = this;
       var res = false;
-      console.log("test");
       try {
         res = await self.$refs.simpleRules.validate();
       } catch (e) {
         console.log(e);
         res = false;
       }
+      if (!this.data.url) res = false; // Fix nach PLP
+      self.data.testPassed = res;
       self.$set(this, "inputPassed", res);
       return res;
     },
@@ -333,6 +403,9 @@ export default {
       fElment = elmt;
     }
     self.found = fElment;
+    setTimeout(() => {
+      self.checkForm();
+    }, 500);
   },
 };
 </script>

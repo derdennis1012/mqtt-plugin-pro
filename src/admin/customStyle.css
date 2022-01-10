@@ -75,3 +75,10 @@
   font-size: 0.7rem !important;
   color: #646970 !important;
 }
+
+.scroll-it {
+  height: 100%;
+  max-height: 50vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}

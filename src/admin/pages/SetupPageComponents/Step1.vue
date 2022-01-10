@@ -1,6 +1,10 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
-    <h1 class="mb-4 mt-4">1. Info</h1>
+    <h1 class="mb-4 mt-4">
+      <span @click="$emit('goBack')">
+        <font-awesome-icon class="mr-3" :icon="['fal', 'chevron-left']" /></span
+      >1. Info
+    </h1>
     <div class="scroll-y overflow-auto">
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce leo
@@ -85,6 +89,8 @@ export default {
       this.$emit("nextStep");
     },
     checkNextStep() {
+      this.testPassed = true;
+
       this.nextStep();
     },
   },
