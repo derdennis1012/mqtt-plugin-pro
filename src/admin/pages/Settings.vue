@@ -1,19 +1,20 @@
 <template>
   <div>
+    <h4>MQTT Pro Plug-In Settings Page</h4>
     <validation-observer ref="simpleRules">
       <b-form>
         <div>
           <b-row>
             <!--MQTT URL-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="Enter MQTT URL:"
               v-b-tooltip.hover.right
               title="e.g. 14.18.124.26"
               >
-                <label>Enter MQTT URL:</label>
+                
                 <validation-provider
                   #default="{ errors }"
-                  rules="required|url|ip"
+                  rules="required|url"
                   name="URL"
                 >
                   <b-form-input
@@ -26,18 +27,14 @@
                 </validation-provider>
               </b-form-group>
             </b-col>
-          </b-row>
-        </div>
 
-        <div>
-          <b-row>
             <!--MQTT Port-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="Enter MQTT Port:"
               v-b-tooltip.hover.right
               title="Default: 1883"
               >
-                <label>Enter MQTT Port:</label>
+                
                 <validation-provider
                   #default="{ errors }"
                   rules="required|integer"
@@ -60,47 +57,47 @@
           <b-row>
             <!--MQTT client id-->
             <b-col md="6">
-              <b-form-group
+              <b-form-group label="ClientID:"
               v-b-tooltip.hover.right
               title="e.g. my_mqtt_client"
               >
-                <!--ToDo: ID & password & port => SetupPageComp/step2.vue-->
-                <label>MQTT Client ID:</label>
+                <!--ToDo: ID & password & port => SetupPageComp/step2.vue
+                  -> Password ausblenden, wenn nicht pw geschützt-->
+                
                 <validation-provider
                   #default="{ errors }"
+                  name="ClientID"
                   rules="required"
-                  name="Client ID"
-                  type="text"
                 >
                   <b-form-input
                     @input="checkForm()"
                     v-model="settingsData.mqtt_client_id"
                     :state="errors.length > 0 ? false : null"
-                    placeholder="Enter Client ID"
+                    type="text"
+                    placeholder="ClientID"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-form-group>
             </b-col>
             <b-col md="3">
-                <div class="mt-4">
-                  <b-button block variant="primary" @click="generateID()"
-                    >Generate ID</b-button
-                  >
-                </div>
-              </b-col>
+              <div class="mt-4">
+                <b-button block variant="primary" @click="generateID()"
+                  >Generate ID</b-button
+                >
+              </div>
+            </b-col>
           </b-row>
         </div>
 
         <div>
           <b-row>
             <!--MQTT User: optional - Prüfen, ob User existiert-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="MQTT User:"
               v-b-tooltip.hover.right
               title="Blank if no User"
               >
-                <label>MQTT User:</label>
                 <validation-provider #default="{ errors }" rules="" name="User">
                   <b-form-input
                     @input="checkForm()"
@@ -112,19 +109,13 @@
                 </validation-provider>
               </b-form-group>
             </b-col>
-          </b-row>
-        </div>
 
-
-        <div>
-          <b-row>
             <!--MQTT password: optional - Prüfen, ob pw korrekt-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="MQTT Password:"
               v-b-tooltip.hover.right
               title="Enter Password for User"
               >
-                <label>MQTT Password:</label>
                 <validation-provider
                   #default="{ errors }"
                   rules="password"
@@ -143,16 +134,15 @@
           </b-row>
         </div>
 
+
         <div>
           <b-row>
             <!--MQTT Topics mit regex prüfen-->
             <b-col md="6">
-              <b-form-group
+              <b-form-group label="MQTT Topics:"
               v-b-tooltip.hover.right
               title="Format: sensor_1,sensor_2,..."
               >
-                
-                <label>MQTT Topics:</label>
                 <validation-provider
                   #default="{ errors }"
                   rules="required|regex:^(.*[^\/\s])$"
@@ -175,12 +165,11 @@
         <div>
           <b-row>
             <!--MQTT intervall-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="MQTT Intervall:"
               v-b-tooltip.hover.right
               title="Must be a natural number > 0"
               >
-                <label>MQTT Intervall:</label>
                 <validation-provider
                   #default="{ errors }"
                   rules="required|integer|positive"
@@ -196,19 +185,13 @@
                 </validation-provider>
               </b-form-group>
             </b-col>
-          </b-row>
-        </div>
 
-
-        <div>
-          <b-row>
             <!--MQTT ttl-->
-            <b-col md="6">
-              <b-form-group
+            <b-col md="3">
+              <b-form-group label="MQTT Time To Live:"
               v-b-tooltip.hover.right
               title="Must be a natural number > 0"
               >
-                <label>MQTT Time To Live:</label>
                 <validation-provider
                   #default="{ errors }"
                   rules="required|integer|positive"
@@ -227,17 +210,18 @@
           </b-row>
         </div>
 
+
         <div>
           <b-row>
-            <!-- submit button -->
+            <!-- submit button  :disabled="!inputPassed"-->
             <b-col cols="12">
               <b-button
                 variant="primary"
                 type="submit"
-                @click.prevent="validationForm"
-                :disabled="!testPassed"
+                @click.prevent="checkForm"
+
               >
-                Save 
+                Save Settings
               </b-button>
             </b-col>
           </b-row>
@@ -247,32 +231,35 @@
     </validation-observer>
 
     <!--Cards-->
+    <!--ToDo: check card verwandelt sich zu success oder error-->
     <div>
       <b-card-group deck>
-        <b-card bg-variant="secondary" text-variant="white" title="Check MQTT connection">
+        <b-card v-if="testPassed == null" bg-variant="secondary" text-variant="white" title="Check MQTT connection">
           <b-card-text>
-            To check if your entered details work, please check the MQTT connection
+            To check if your entered details work, please check the MQTT connection.
           </b-card-text>
-            <b-button @click="checkConnection" variant="primary">Check</b-button>
+            <b-button 
+            variant="primary"
+            @click="checkMQTTConnection" 
+            :disabled="!inputPassed"
+            block
+            >Check MQTT connection</b-button>
         </b-card>
 
-
-        <!--ToDo: Icons einfügen-->
-        <!--v-if="testPassed === true"-->
-        <b-card v-if="testPassed === true" bg-variant="success" text-variant="white" class="text-center">
-            <!--b-avatar
-              variant="light-primary"
-              icon="fa-check"
-              prefix="fas"
-              class="mr-2"
-            ></b-avatar-->
+        
+        <!---->
+        <b-card v-if="inputPassed === true" bg-variant="success" text-variant="white" class="text-center">
+              <font-awesome-icon :icon="['fad', 'check-circle']" />
+            
             <b-card-title>It works!</b-card-title>
-            <b-card-text>Your connection works, we are ready to receive data.</b-card-text>
+            <b-card-text>Your connection works! <br> We are ready to receive data.</b-card-text>
         </b-card>
 
-        <b-card v-if="testPassed === false" bg-variant="danger" text-variant="white" class="text-center">
+        <b-card v-if="inputPassed === false" bg-variant="danger" text-variant="white" class="text-center">
+            <font-awesome-icon :icon="['fad', 'exclamation-triangle']" />
+
             <b-card-title>Error!</b-card-title>
-            <b-card-text>Your connection doesn't work! <br> Please check you settings</b-card-text>
+            <b-card-text>Your connection doesn't work! <br> Please check you settings.</b-card-text>
         </b-card>
       </b-card-group>
     </div>
@@ -307,34 +294,14 @@ export default {
       integer,
       positive,
       regex,
-      testPassed:null
+      renderComponent: false,
+      inputPassed: false,
+      testRunning: false,
     };
   },
-  computed:{
-    isDisabled(){
-      //enable button when "Connection Success" card is visible 
-      return true
-    }
-  },
 
+  /*ToDo: 1. setStatus Funktionen PlugIn deaktivieren 2. getStatus aktuellen Status erhalten*/
   methods: {
-    validationForm() {
-      this.$refs.simpleRules.validate().then(success => {
-        if (success) {
-          // eslint-disable-next-line
-          alert('form submitted!')
-        }
-      })
-    },
-    checkConnection(succes=true) {
-      if(succes){
-        this.testPassed=true
-      } else
-        this.testPassed=false
-    },
-
-
-
     async generateID() {
       var self = this;
       var first = [
@@ -351,7 +318,7 @@ export default {
       var username = `${first[self.getRandomInt(first.length)]}_${
         second[self.getRandomInt(second.length)]
       }${self.getRandomInt(9999)}`;
-      self.$set(self.data, "ClientID", username);
+      self.$set(self.settingsData, "mqtt_client_id", username);
       await self.checkForm();
       await self.checkForm();
     },
@@ -382,6 +349,7 @@ export default {
       self.$set(this, "inputPassed", res);
       return res;
     },
+    
     forceRerender() {
       // Remove my-component from the DOM
       this.renderComponent = false;
@@ -392,11 +360,10 @@ export default {
       });
     },
   },
-
+  
   created() {
     var self = this;
     self.dataObj = self.data;
   },
-  
 };
 </script>
