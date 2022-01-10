@@ -2,6 +2,90 @@
   <div>
     <h4>MQTT Pro Plug-In Settings Page</h4>
     <validation-observer ref="simpleRules">
+      <span class="text-muted"
+          >Please select the option that maches your MQTT Broker</span
+        >
+      <div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div
+            :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
+              settingsData.isSecured ? 'border-primary border-card-lg' : ''
+            } w-100`"
+            @click="settingsData.isSecured = true"
+          >
+            <div class="d-flex align-items-center">
+              <b-avatar
+                variant="light-primary"
+                icon="lock-fill"
+                class="mr-2"
+              ></b-avatar
+              >Yes it is password protected
+            </div>
+          </div>
+          <div
+            :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
+              settingsData.isSecured == false ? 'border-primary border-card-lg' : ''
+            } w-100`"
+            @click="settingsData.isSecured = false"
+          >
+            <div class="d-flex align-items-center">
+              <b-avatar
+                variant="light-primary"
+                icon="unlock-fill"
+                class="mr-2"
+              ></b-avatar
+              >No its open to acces without password
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="settingsData.isSecured != null && (!testRunning || testResult !== null)"
+        >
+        </div>
+      </div>
+
+      <div v-if="settingsData.isSecured == true">
+              <b-form>
+                <b-row>
+                  <b-col md="6">
+                    <b-form-group label="Username:">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="Username"
+                        rules="required"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="settingsData.username"
+                          :state="errors.length > 0 ? false : null"
+                          placeholder="Username"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="6">
+                    <b-form-group label="Password:">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="Password"
+                        rules="required"
+                      >
+                        <b-form-input
+                          @input="checkForm()"
+                          v-model="settingsData.password"
+                          :state="errors.length > 0 ? false : null"
+                          type="password"
+                          placeholder="Password"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </div>
+
       <b-form>
         <div>
           <b-row>
@@ -56,13 +140,13 @@
         <div>
           <b-row>
             <!--MQTT client id-->
-            <b-col md="6">
+            <b-col md="3">
               <b-form-group label="ClientID:"
               v-b-tooltip.hover.right
               title="e.g. my_mqtt_client"
               >
-                <!--ToDo: ID & password & port => SetupPageComp/step2.vue
-                  -> Password ausblenden, wenn nicht pw geschützt-->
+                <!--ToDo: (ID darf nicht username sein! regex)
+                ToDo: Password ausblenden, wenn nicht pw geschützt-->
                 
                 <validation-provider
                   #default="{ errors }"
@@ -90,9 +174,9 @@
           </b-row>
         </div>
 
-        <div>
+        <!--div>
           <b-row>
-            <!--MQTT User: optional - Prüfen, ob User existiert-->
+            
             <b-col md="3">
               <b-form-group label="MQTT User:"
               v-b-tooltip.hover.right
@@ -110,7 +194,7 @@
               </b-form-group>
             </b-col>
 
-            <!--MQTT password: optional - Prüfen, ob pw korrekt-->
+            
             <b-col md="3">
               <b-form-group label="MQTT Password:"
               v-b-tooltip.hover.right
@@ -132,7 +216,7 @@
               </b-form-group>
             </b-col>
           </b-row>
-        </div>
+        </div-->
 
 
         <div>
@@ -219,6 +303,7 @@
                 variant="primary"
                 type="submit"
                 @click.prevent="checkForm"
+                :disabled="!connected"
 
               >
                 Save Settings
@@ -234,14 +319,15 @@
     <!--ToDo: check card verwandelt sich zu success oder error-->
     <div>
       <b-card-group deck>
-        <b-card v-if="testPassed == null" bg-variant="secondary" text-variant="white" title="Check MQTT connection">
+        <b-card v-if="testPassed == null" bg-variant="secondary" text-variant="white" class="text-center">
+          <b-card-title>Check MQTT connection</b-card-title>
+
           <b-card-text>
-            To check if your entered details work, please check the MQTT connection.
+            To check if your entered details work, check the MQTT connection.
           </b-card-text>
             <b-button 
             variant="primary"
-            @click="checkMQTTConnection" 
-            :disabled="!inputPassed"
+            @click="checkMQTTConnection"
             block
             >Check MQTT connection</b-button>
         </b-card>
@@ -281,6 +367,7 @@ import {
 
 export default {
   name: "SettingsPage",
+
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -297,11 +384,19 @@ export default {
       renderComponent: false,
       inputPassed: false,
       testRunning: false,
+      connected: false,
     };
   },
 
-  /*ToDo: 1. setStatus Funktionen PlugIn deaktivieren 2. getStatus aktuellen Status erhalten*/
   methods: {
+
+    /*ToDo: PlugIn deaktivieren */
+    setStaus(){},
+
+    /*ToDo: aktuellen Status erhalten */
+    getStatus(){},
+
+
     async generateID() {
       var self = this;
       var first = [
@@ -335,6 +430,11 @@ export default {
       fetch("https://jsonplaceholder.typicode.com/posts", requestOptions)
         .then((response) => response.json())
         .then((data) => console.log(data));
+
+      /*enable Save Settings Button*/
+      
+      this.connected=true
+      
     },
     async checkForm() {
       var self = this;
