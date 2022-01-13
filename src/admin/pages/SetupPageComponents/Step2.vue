@@ -332,7 +332,7 @@ export default {
         mqtt_pro_mqtt_client_id: self.data.ClientID,
         mqtt_pro_mqtt_user: self.data.username,
         mqtt_pro_mqtt_password: self.data.password,
-        mqtt_pro_mqtt_is_secured: "false",
+        mqtt_pro_requires_auth: "" + self.data.isSecured,
       };
       const requestOptions = {
         method: "POST",
@@ -360,7 +360,7 @@ export default {
       }
       if (response) {
         var data = await response.json();
-
+        console.log(data);
         self.testResult = data.connected;
         if (self.testResult) self.data.testPassed = true;
       }

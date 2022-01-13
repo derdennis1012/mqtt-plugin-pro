@@ -2,7 +2,7 @@
   <div class="d-flex flex-column justify-content-between h-100">
     <div class="mt-4" v-if="loaded">
       <h1 class="mb-4">
-        <span @click="$emit('goBack')">
+        <span @click="$emit('goBack')" v-if="!finished">
           <font-awesome-icon
             class="mr-3"
             :icon="['fal', 'chevron-left']" /></span
@@ -323,29 +323,31 @@ export default {
         "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/test-connection-without",
         settingsOBJ
       );
-      await this.timeout(200);
+      await this.timeout(1000);
       console.log(res);
 
       if (res) return true;
       else return false;
     },
     async sendSettingsToServer() {
+      var self = this;
       var settingsOBJ = self.convertToSettingsObj();
       const res = await self.sendPostReqG(
         "/wp-json/mqtt-plugin-pro/v1/settings",
         settingsOBJ
       );
-      await this.timeout(1000);
+      await this.timeout(2000);
       console.log(res);
 
       if (res) return true;
       else return false;
     },
     async activateService() {
+      var self = this;
       var res = await self.sendGetReqG(
         "/wp-json/mqtt-plugin-pro/v1/settings/activate"
       );
-      await this.timeout(1000);
+      await this.timeout(2000);
       console.log(res);
       if (res) return true;
       else return false;
@@ -360,6 +362,8 @@ export default {
 
         return false;
       }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       this.$set(self.checkResults, 0, true);
 
       this.$set(self.checkResults, 1, "running");
@@ -383,7 +387,7 @@ export default {
 
       this.$set(self.checkResults, 3, "running");
 
-      r = await self.sendSettingsToServer();
+      r = await self.activateService();
       if (!r) {
         this.$set(self.checkResults, 3, false);
 
@@ -400,14 +404,19 @@ export default {
       var self = this;
       self.checkRunning = true;
       try {
-        await self.checkSettings();
+        var res = await self.checkSettings();
       } catch (e) {
         console.log(e);
       }
       await self.timeout(800);
-      self.checkRunning = false;
-      self.finished = true;
-      self.showConfetti();
+      if (res) {
+        self.checkRunning = false;
+        self.finished = true;
+        self.showConfetti();
+      } else {
+        self.checkRunning = false;
+        self.finished = false;
+      }
     },
     async convertToSettingsObj() {
       var self = this;
@@ -463,7 +472,6 @@ export default {
       settingsObj.mqtt_pro_mqtt_ttl = self.data[4].ttl;
       settingsObj.mqtt_pro_active = false;
       this.settingsObj = settingsObj;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       return settingsObj;
     },
@@ -478,4 +486,6 @@ export default {
     self.loaded = true;
   },
 };
+
+[{ label: "1 Minute", code: "1min" }, {}];
 </script>

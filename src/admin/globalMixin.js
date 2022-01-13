@@ -32,6 +32,22 @@ export const globalMixin = {
       }
       return false;
     },
-    async sendGetReqG(path) {},
+    async sendGetReqG(path) {
+      var self = this;
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      };
+      var res = await fetch(self.getSiteURLG() + path, requestOptions);
+      if (res.status == 200) {
+        try{
+          console.log(res.body.json())
+        }catch(e){
+          console.log(e)
+        }
+        return res;
+      }
+      return false;
+    },
   },
 };
