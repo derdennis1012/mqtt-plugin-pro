@@ -100,7 +100,7 @@
       block
       @click="checkNextStep"
       :disabled="!data.testPassed"
-      >Next Step</b-button
+      >Next step</b-button
     >
   </div>
 </template>

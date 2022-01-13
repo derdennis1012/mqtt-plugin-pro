@@ -110,7 +110,7 @@
     />
     <Step5
       v-if="step == 5"
-      :data="steps[5]"
+      :data="steps"
       @nextStep="() => {}"
       @goBack="step--"
     />
@@ -154,34 +154,23 @@ export default {
       loaderImage: require("../../assets/img/loader.png"),
       errorImage: require("../../assets/img/500.png"),
       successImage: require("../../assets/img/200.png"),
-
       acceptedTerms: false,
       steps: {
-        1: {
-          acceptedTerms: false,
-          testPassed: false,
-        },
+        1: { acceptedTerms: true, testPassed: false },
         2: {
-          url: "",
-          isSecured: null,
-          ClientID: "",
+          url: "141.28.73.33",
+          isSecured: false,
+          ClientID: "pretty_pb&j2190",
           username: "",
           password: "",
-          port: 1883,
-          testPassed: false,
+          port: "80",
+          testPassed: true,
           testRunning: false,
           formPassed: false,
+          isCustomPort: true,
         },
-        3: {
-          topics: [],
-          testPassed: false,
-        },
-        4: {
-          ttl: null,
-          keepData: null,
-          interval: null,
-          testPassed: false,
-        },
+        3: { topics: ["Test", "123"], testPassed: false },
+        4: { ttl: null, keepData: true, interval: "20", testPassed: true },
       },
     };
   },
@@ -190,6 +179,9 @@ export default {
     saveData() {
       console.log(this.settingsData);
     },
+  },
+  created() {
+    console.log(this.getSiteURLG());
   },
 };
 </script>

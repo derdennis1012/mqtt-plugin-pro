@@ -61,6 +61,17 @@ class MQTTFunctions extends WP_REST_Controller {
         );
         register_rest_route(
             $this->namespace,
+            '/' . $this->rest_base .'/get/all',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_all_mqtt_values' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
             '/' . $this->rest_base .'/delete/(?P<id>\d+)',
             [
                 [
@@ -97,6 +108,16 @@ class MQTTFunctions extends WP_REST_Controller {
     public function get_mqtt_values( $request ){
         $topic = $request['topic'];
         $sql = "SELECT * FROM wp_mqtt_pro_data WHERE topic = '".$topic."' ORDER BY RecordCreated DESC";
+        $res = $this->wpdb->get_results($sql,ARRAY_A);
+        $respObj = [
+            'res'=>$res
+        ];
+        $response = rest_ensure_response(  $res  );
+
+        return $response;
+    }
+    public function get_all_mqtt_values( $request ){
+        $sql = "SELECT * FROM wp_mqtt_pro_data ORDER BY RecordCreated DESC";
         $res = $this->wpdb->get_results($sql,ARRAY_A);
         $respObj = [
             'res'=>$res
@@ -146,13 +167,13 @@ class MQTTFunctions extends WP_REST_Controller {
     public function check_connection( $request ) {
         $conncected = null;
         $settingsData = [
-            'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
-            'mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
-            'mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
-            'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
-            'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
+            'mqtt_pro_mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_pro_mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_pro_mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_pro_mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
+            'mqtt_pro_mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
         ];
-            $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+            $mqtt = new \APP\phpMQTT( $settingsData['mqtt_pro_mqtt_url'], intval($settingsData['mqtt_pro_mqtt_port']), $settingsData['mqtt_pro_mqtt_client_id'] );
             if ($mqtt->connect()) {
                 $mqtt->close();
                 $conncected = true;
@@ -171,16 +192,16 @@ class MQTTFunctions extends WP_REST_Controller {
     public function check_connection_without( $request ) {
         $conncected = null;
         $settingsData = [
-            'mqtt_url' => $request['mqtt_pro_mqtt_url'],
-            'mqtt_port' => $request['mqtt_pro_mqtt_port'],
-            'mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
-            'mqtt_user' => $request['mqtt_pro_mqtt_user'],
-            'mqtt_password' => $request['mqtt_pro_mqtt_password'],
+            'mqtt_pro_mqtt_url' => $request['mqtt_pro_mqtt_url'],
+            'mqtt_pro_mqtt_port' => $request['mqtt_pro_mqtt_port'],
+            'mqtt_pro_mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
+            'mqtt_pro_mqtt_user' => $request['mqtt_pro_mqtt_user'],
+            'mqtt_pro_mqtt_password' => $request['mqtt_pro_mqtt_password'],
             'is_secured' => $request['mqtt_pro_mqtt_is_secured']
 
         ];
             try{
-                $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+                $mqtt = new \APP\phpMQTT( $settingsData['mqtt_pro_mqtt_url'], intval($settingsData['mqtt_pro_mqtt_port']), $settingsData['mqtt_pro_mqtt_client_id'] );
             if ($mqtt->connect()) {
                 $mqtt->close();
                 $conncected = true;

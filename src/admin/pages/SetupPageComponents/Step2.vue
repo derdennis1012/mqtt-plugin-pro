@@ -239,7 +239,7 @@
       block
       @click="checkNextStep"
       :disabled="!testResult && !testResult"
-      >Next Step</b-button
+      >Next step</b-button
     >
   </div>
 </template>
@@ -329,9 +329,9 @@ export default {
       var settingsData = {
         mqtt_pro_mqtt_url: self.data.url,
         mqtt_pro_mqtt_port: `${!isNaN(self.data.port) ? self.data.port : 1883}`,
-        mqtt_client_id: self.data.ClientID,
-        mqtt_user: self.data.username,
-        mqtt_password: self.data.password,
+        mqtt_pro_mqtt_client_id: self.data.ClientID,
+        mqtt_pro_mqtt_user: self.data.username,
+        mqtt_pro_mqtt_password: self.data.password,
         mqtt_pro_mqtt_is_secured: "false",
       };
       const requestOptions = {

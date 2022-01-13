@@ -55,7 +55,7 @@
       block
       @click="checkNextStep"
       :disabled="(data.topics || []).length < 1"
-      >Next Step</b-button
+      >Next step</b-button
     >
   </div>
 </template>

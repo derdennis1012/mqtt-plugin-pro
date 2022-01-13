@@ -63,7 +63,7 @@
       variant="primary"
       block
       @click="checkNextStep()"
-      >Next Step</b-button
+      >Next step</b-button
     >
     <b-button v-else variant="primary" block disabled
       >You have to accept the terms</b-button

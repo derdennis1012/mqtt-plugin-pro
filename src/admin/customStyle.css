@@ -6,9 +6,33 @@
   border: 2px solid #1f3bd5 !important;
   align-self: stretch;
 }
+.bg-light-danger {
+  color: rgba(255, 61, 113, 1);
+  background: rgba(255, 61, 113, 0.12);
+}
+.bg-light-primary {
+  color: #1f3bd5;
+  background: rgba(51, 122, 190, 0.15);
+}
 .badge-light-primary {
   color: #1f3bd5;
   background: rgba(51, 122, 190, 0.15);
+}
+.badge-light-success {
+  color: rgba(31, 200, 125, 1);
+  background: rgba(31, 200, 125, 0.2);
+}
+
+.topic-card {
+  min-width: 150px;
+  width: auto;
+  min-height: 60px;
+  height: 60px;
+}
+.scroll-container-custom {
+  max-width: 100vw;
+  overflow: hidden;
+  overflow-x: scroll;
 }
 
 .lock-animation {

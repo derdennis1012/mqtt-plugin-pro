@@ -126,8 +126,8 @@ class SettingsPage extends WP_REST_Controller {
     }
 
     public function activate_service(){
-        write_log("Go into activate service.");
-
+        write_log("Go into activate service....");
+        do_action( 'mqtt_disable',null);
         $activated = "false";
         $error = "false";
         $cStatus =  get_option( 'mqtt_pro_active', "false" );
@@ -174,16 +174,16 @@ class SettingsPage extends WP_REST_Controller {
 
     public function checkMQTTConnection(){
         $settingsData = [
-            'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
-            'mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
-            'mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
-            'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
-            'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
-            'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
+            'mqtt_pro_mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_pro_mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_pro_mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_pro_mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
+            'mqtt_pro_mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
+            'mqtt_pro_requires_auth' => get_option( 'mqtt_pro_mqtt_topics', "false" ),
         ];
 
-
-        $mqtt = new \APP\phpMQTT( $settingsData['mqtt_url'], intval($settingsData['mqtt_port']), $settingsData['mqtt_client_id'] );
+        //@ToDo hier auch auth mit PWD
+        $mqtt = new \APP\phpMQTT( $settingsData['mqtt_pro_mqtt_url'], intval($settingsData['mqtt_pro_mqtt_port']), $settingsData['mqtt_pro_mqtt_client_id'] );
         if ($mqtt->connect()) return true;
         else return false;
     }
@@ -219,39 +219,45 @@ class SettingsPage extends WP_REST_Controller {
     public function set_settings_data( $request ) {
 
         // Data validation
-        $mqtt_url = isset( $request['mqtt_url'] ) ? sanitize_text_field( $request['mqtt_url'] ): '';
-        $mqtt_port = isset( $request['mqtt_port'] ) ? sanitize_text_field( $request['mqtt_port'] ): '';
-        $mqtt_client_id = isset( $request['mqtt_client_id'] ) ? sanitize_text_field( $request['mqtt_client_id'] ): '';
-        $mqtt_user = isset( $request['mqtt_user'] ) ? sanitize_text_field( $request['mqtt_user'] ): '';
-        $mqtt_password = isset( $request['mqtt_password'] ) ? sanitize_text_field( $request['mqtt_password'] ): '';
-        $mqtt_topics = isset( $request['mqtt_topics'] ) ? sanitize_text_field( $request['mqtt_topics'] ): '';
-        $mqtt_intervall = isset( $request['firstname'] ) ? sanitize_text_field( $request['firstname'] ): '';
-        $mqtt_ttl = isset( $request['mqtt_ttl'] ) ? sanitize_text_field( $request['mqtt_ttl'] ): '';
-        $is_active = isset( $request['active'] ) ? sanitize_text_field( $request['active'] ): '';
+        $mqtt_pro_mqtt_url = isset( $request['mqtt_pro_mqtt_url'] ) ? $request['mqtt_pro_mqtt_url'] : '';
+        $mqtt_pro_mqtt_port = isset( $request['mqtt_pro_mqtt_port'] ) ? $request['mqtt_pro_mqtt_port']: '';
+        $mqtt_pro_mqtt_client_id = isset( $request['mqtt_pro_mqtt_client_id'] ) ?$request['mqtt_pro_mqtt_client_id'] : '';
+        $mqtt_pro_requires_auth = isset( $request['mqtt_pro_requires_auth'] ) ? $request['mqtt_pro_requires_auth'] : 'false';
+        $mqtt_pro_mqtt_user = isset( $request['mqtt_pro_mqtt_user'] ) ? $request['mqtt_pro_mqtt_user'] : '';
+        $mqtt_pro_mqtt_password = isset( $request['mqtt_pro_mqtt_password'] ) ? $request['mqtt_pro_mqtt_password'] : '';
+        $mqtt_pro_mqtt_topics = isset( $request['mqtt_pro_mqtt_topics'] ) ? $request['mqtt_pro_mqtt_topics'] : '';
+        $mqtt_pro_mqtt_interval = isset( $request['mqtt_pro_mqtt_interval'] ) ? $request['mqtt_pro_mqtt_interval'] : '';
+        $mqtt_pro_has_ttl = isset( $request['mqtt_pro_has_ttl'] ) ? $request['mqtt_pro_has_ttl'] : 'false';
+        $mqtt_pro_mqtt_ttl = isset( $request['mqtt_pro_mqtt_ttl'] ) ? $request['mqtt_pro_mqtt_ttl'] : '';
+        $mqtt_pro_active = isset( $request['mqtt_pro_active'] ) ?  $request['mqtt_pro_active'] : '';
 
 
         // Save option data into WordPress
-        update_option( 'mqtt_pro_mqtt_url', $mqtt_url );
-        update_option( 'mqtt_pro_mqtt_port', $mqtt_port );
-        update_option( 'mqtt_pro_mqtt_client_id', $mqtt_client_id );
-        update_option( 'mqtt_pro_mqtt_user', $mqtt_user );
-        update_option( 'mqtt_pro_mqtt_password', $mqtt_password );
-        update_option( 'mqtt_pro_mqtt_topics', $mqtt_topics );
-        update_option( 'mqtt_pro_mqtt_intervall', $mqtt_intervall );
-        update_option( 'mqtt_pro_mqtt_ttl', $mqtt_ttl );
-        update_option( 'mqtt_pro_active', $is_active );
+        update_option( 'mqtt_pro_mqtt_url', $mqtt_pro_mqtt_url );
+        update_option( 'mqtt_pro_mqtt_port', $mqtt_pro_mqtt_port );
+        update_option( 'mqtt_pro_mqtt_client_id', $mqtt_pro_mqtt_client_id );
+        update_option( 'mqtt_pro_requires_auth', $mqtt_pro_requires_auth);
+        update_option( 'mqtt_pro_mqtt_user', $mqtt_pro_mqtt_user );
+        update_option( 'mqtt_pro_mqtt_password', $mqtt_pro_mqtt_password );
+        update_option( 'mqtt_pro_mqtt_topics', $mqtt_pro_mqtt_topics );
+        update_option( 'mqtt_pro_mqtt_interval', $mqtt_pro_mqtt_interval );
+        update_option( 'mqtt_pro_has_ttl', $mqtt_pro_has_ttl );
+        update_option( 'mqtt_pro_mqtt_ttl', $mqtt_pro_mqtt_ttl );
+        update_option( 'mqtt_pro_active', $mqtt_pro_active );
 
 
         $settingsData = [
-            'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
-            'mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
-            'mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
-            'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', "" ),
-            'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', "" ),
-            'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
-            'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
-            'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
-            'active' => get_option( 'mqtt_pro_active', "false" ),
+            'mqtt_pro_mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_pro_mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_pro_mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_pro_requires_auth' => get_option( 'mqtt_pro_requires_auth', "" ),
+            'mqtt_pro_mqtt_user' => get_option( 'mqtt_pro_mqtt_user', "" ),
+            'mqtt_pro_mqtt_password' => get_option( 'mqtt_pro_mqtt_password', "" ),
+            'mqtt_pro_mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
+            'mqtt_pro_mqtt_interval' => get_option( 'mqtt_pro_mqtt_interval', "" ),
+            'mqtt_pro_has_ttl' => get_option( 'mqtt_pro_has_ttl', false ),
+            'mqtt_pro_mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "" ),
+            'mqtt_pro_active' => get_option( 'mqtt_pro_active', "false" ),
         ];
 
         $response = rest_ensure_response( $settingsData );
@@ -261,15 +267,17 @@ class SettingsPage extends WP_REST_Controller {
 
     public function get_settings_data( $request ) {
         $settingsData = [
-            'mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
-            'mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
-            'mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
-            'mqtt_user' => get_option( 'mqtt_pro_mqtt_user', "" ),
-            'mqtt_password' => get_option( 'mqtt_pro_mqtt_password', "" ),
-            'mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
-            'mqtt_intervall' => get_option( 'mqtt_pro_mqtt_intervall', "30" ),
-            'mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
-            'active' => get_option( 'mqtt_pro_active', false ),
+            'mqtt_pro_mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_pro_mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_pro_mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_pro_requires_auth' => get_option( 'mqtt_pro_requires_auth', "" ),
+            'mqtt_pro_mqtt_user' => get_option( 'mqtt_pro_mqtt_user', "" ),
+            'mqtt_pro_mqtt_password' => get_option( 'mqtt_pro_mqtt_password', "" ),
+            'mqtt_pro_mqtt_topics' => get_option( 'mqtt_pro_mqtt_topics', "" ),
+            'mqtt_pro_mqtt_interval' => get_option( 'mqtt_pro_mqtt_interval', "30" ),
+            'mqtt_pro_has_ttl' => get_option( 'mqtt_pro_has_ttl', false ),
+            'mqtt_pro_mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
+            'mqtt_pro_active' => get_option( 'mqtt_pro_active', "false" ),
         ];
         $response = rest_ensure_response( $settingsData );
         return $response;

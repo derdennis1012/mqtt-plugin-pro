@@ -35,23 +35,15 @@ import moment from "moment";
 
 Vue.prototype.moment = moment;
 
-Vue.config.productionTip = false;
+import { globalMixin } from "./globalMixin";
+Vue.mixin(globalMixin);
 
-var elements = document.querySelectorAll("[data-pk-atts]");
-var instances = [];
-var vueInstances = [];
-for (var i = 0; i < elements.length; i++) {
-  var element = elements[i];
-  var clss = element.getAttribute("class").split("mqtt-pro-whopper-")[1];
-  instances.push(clss);
-}
-var data = { instance: instances[0] };
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
   el: "#vue-admin-app",
   router,
-  data: data,
   render: (h) => h(App),
 });
 

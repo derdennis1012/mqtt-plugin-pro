@@ -57,7 +57,6 @@ if ( !defined( 'ABSPATH' ) ){
 
 
 function my_cron_schedules($schedules){
-    write_log( "Creating Scheduler!" );
 
     if(!isset($schedules["1min"])){
         $schedules["1min"] = array(
@@ -164,6 +163,7 @@ final class MQTT_Plugin_Pro {
     //Custom function to be called on schedule triggered.
     function scheduleTriggered() {
         write_log( "Scheduler triggered!" );
+        //@ToDo -> loop -> array -> get_m... mit Parameter Topic aufrufen
         $this->get_mqtt_data();
     }
     /**
@@ -183,7 +183,7 @@ final class MQTT_Plugin_Pro {
      * @return void
      */
     public function define_constants() {
-        define( 'MQTTPLUGINPRO_VERSION', $this->version );
+        define( 'mqtt_pro_version', $this->version );
         define( 'MQTTPLUGINPRO_FILE', __FILE__ );
         define( 'MQTTPLUGINPRO_PATH', dirname( MQTTPLUGINPRO_FILE ) );
         define( 'MQTTPLUGINPRO_INCLUDES', MQTTPLUGINPRO_PATH . '/includes' );
@@ -205,11 +205,17 @@ final class MQTT_Plugin_Pro {
 
     public function get_mqtt_data(){
         write_log( "GET MQTT" );
+        $topics = get_option( 'mqtt_pro_mqtt_topics' );
+        $topicsArr = explode(',', $topics);
 
         $MQTTFN = new APP\MQTTBackendFunctions();
-        $MQTTFN->mqtt_subscribe();
-        write_log( "DONE MQTT" );
 
+
+        foreach($topicsArr as $key => $value) 
+        {
+            $MQTTFN->mqtt_subscribe($value);
+            write_log( "DONE MQTT: ".$value );
+        }
     }
 
 
@@ -222,14 +228,14 @@ final class MQTT_Plugin_Pro {
      */
     public function activate() {
 
-        $installed = get_option( 'mqttpluginpro_installed' );
+        $installed = get_option( 'mqtt_pro_installed' );
 
         if ( ! $installed ) {
-            update_option( 'mqttpluginpro_installed', time() );
+            update_option( 'mqtt_pro_installed', time() );
         }
         include('installer.php');
         
-        update_option( 'mqttpluginpro_version', MQTTPLUGINPRO_VERSION );
+        update_option( 'mqtt_pro_version', mqtt_pro_version );
 
         write_log("Plugin activating.");
 
@@ -249,7 +255,8 @@ final class MQTT_Plugin_Pro {
         write_log("Wenn das nicht klappt rast ich aus!");
         $cStatus =  get_option( 'mqtt_pro_active', false );
         write_log($cStatus.'Hello??');
-        if ( ! wp_get_schedule( 'woocsp_cron_delivery' ) &&  $cStatus == 'true') {
+        wp_clear_scheduled_hook('woocsp_cron_delivery');
+        if ( true ) {
             write_log($cStatus.'Hat geklappt...');
             wp_schedule_event( time(), '1min', 'woocsp_cron_delivery' );
         }else{
