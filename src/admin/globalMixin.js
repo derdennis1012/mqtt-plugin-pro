@@ -12,7 +12,8 @@ export const globalMixin = {
   data() {
     return {
       ...data,
-      intervals:[{lables:"Once every 30 seconds" , code: "30sec"}, {lables:"Once every minute" , code: "1min"}, {lables:"Once every 5 minutes" , code: "5min"}, {lables:"Once every 15 minutes" , code: "15min"}, {lables:"Once every 30 minutes" , code: "30min"}, {lables:"Once every hour" , code: "1h"}, {lables:"Once every 3 hours" , code: "3h"}, {lables:"Once every 5 hours" , code: "5h"}, {lables:"Once every day" , code: "1d"}, {lables:"Once every 3 days" , code: "3d"}, {lables:"Once every week" , code: "1w"}]
+      intervals:[
+        {label:"Once every 30 seconds" , code: "30sec"}, {label:"Once every minute" , code: "1min"}, {label:"Once every 5 minutes" , code: "5min"}, {label:"Once every 15 minutes" , code: "15min"}, {label:"Once every 30 minutes" , code: "30min"}, {label:"Once every hour" , code: "1h"}, {label:"Once every 3 hours" , code: "3h"}, {label:"Once every 5 hours" , code: "5h"}, {label:"Once every day" , code: "1d"}, {label:"Once every 3 days" , code: "3d"}, {label:"Once every week" , code: "1w"}]
     };
   },
   methods: {
