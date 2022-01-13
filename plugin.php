@@ -58,6 +58,11 @@ if ( !defined( 'ABSPATH' ) ){
 
 function my_cron_schedules($schedules){
 
+    if(!isset($schedules["30sec"])){
+        $schedules["30sec"] = array(
+            'interval' => 0,5*60,
+            'display' => __('Once every 30 Seconds'));
+    }
     if(!isset($schedules["1min"])){
         $schedules["1min"] = array(
             'interval' => 1*60,
@@ -68,10 +73,45 @@ function my_cron_schedules($schedules){
             'interval' => 5*60,
             'display' => __('Once every 5 minutes'));
     }
+    if(!isset($schedules["15min"])){
+        $schedules["15min"] = array(
+            'interval' => 15*60,
+            'display' => __('Once every 15 minutes'));
+    }
     if(!isset($schedules["30min"])){
         $schedules["30min"] = array(
             'interval' => 30*60,
             'display' => __('Once every 30 minutes'));
+    }
+    if(!isset($schedules["1h"])){
+        $schedules["1h"] = array(
+            'interval' => 60*60,
+            'display' => __('Once every hour'));
+    }
+    if(!isset($schedules["3h"])){
+        $schedules["3h"] = array(
+            'interval' => 180*60,
+            'display' => __('Once every 3 hours'));
+    }
+    if(!isset($schedules["5h"])){
+        $schedules["5h"] = array(
+            'interval' => 300*60,
+            'display' => __('Once every 5 hours'));
+    }
+    if(!isset($schedules["1d"])){
+        $schedules["1d"] = array(
+            'interval' => 1440*60,
+            'display' => __('Once every day'));
+    }
+    if(!isset($schedules["3d"])){
+        $schedules["3d"] = array(
+            'interval' => 4320*60,
+            'display' => __('Once every 3 days'));
+    }
+    if(!isset($schedules["1w"])){
+        $schedules["1w"] = array(
+            'interval' => 10080*60,
+            'display' => __('Once every week'));
     }
     write_log( "Created Scheduler!" );
 
