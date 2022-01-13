@@ -319,8 +319,13 @@ export default {
       return true;
     },
     async sendSettingsToServer() {
-      await this.timeout(3000);
-      return true;
+      var settingsOBJ = self.convertToSettingsObj();
+      const res = await self.sendPostReqG(
+        "/wp-json/mqtt-plugin-pro/v1/settings",
+        settingsOBJ
+      );
+      if (res) return true;
+      else return false;
     },
     async checkSettings() {
       var self = this;
@@ -446,13 +451,6 @@ export default {
   },
   async created() {
     var self = this;
-    console.log(self.convertToSettingsObj());
-    var settingsOBJ = self.convertToSettingsObj();
-    const res = await self.sendPostReqG(
-      "/wp-json/myapp/v1/settings",
-      settingsOBJ
-    );
-    console.log(res);
   },
 };
 </script>

@@ -14,7 +14,7 @@ class MQTTFunctions extends WP_REST_Controller {
      * [__construct description]
      */
     public function __construct() {
-        $this->namespace = 'myapp/v1';
+        $this->namespace = 'mqtt-plugin-pro/v1';
         $this->rest_base = 'mqtt-functions';
         global $wpdb;
         $this->wpdb = $wpdb;
@@ -190,34 +190,53 @@ class MQTTFunctions extends WP_REST_Controller {
         return $response;
     }
     public function check_connection_without( $request ) {
-        $conncected = null;
         $settingsData = [
             'mqtt_pro_mqtt_url' => $request['mqtt_pro_mqtt_url'],
             'mqtt_pro_mqtt_port' => $request['mqtt_pro_mqtt_port'],
             'mqtt_pro_mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
             'mqtt_pro_mqtt_user' => $request['mqtt_pro_mqtt_user'],
             'mqtt_pro_mqtt_password' => $request['mqtt_pro_mqtt_password'],
-            'is_secured' => $request['mqtt_pro_mqtt_is_secured']
+            'mqtt_pro_requires_auth' => $request['mqtt_pro_requires_auth'],
 
         ];
+        $conncected = false;
+        write_log("Anfang von Scheißdreck");
             try{
+
                 $mqtt = new \APP\phpMQTT( $settingsData['mqtt_pro_mqtt_url'], intval($settingsData['mqtt_pro_mqtt_port']), $settingsData['mqtt_pro_mqtt_client_id'] );
-            if ($mqtt->connect()) {
-                $mqtt->close();
-                $conncected = true;
+                if($settingsData['mqtt_pro_requires_auth'] == 'true'){
+                    write_log("Auth von Scheißdreck");
+                    if(!$settingsData['mqtt_pro_mqtt_user'] || $settingsData['mqtt_pro_requires_auth'] == 'true')
+                    if ($mqtt->connect(true,NULL,$settingsData['mqtt_pro_mqtt_user'],$settingsData['mqtt_pro_mqtt_password'])) {
+                        $mqtt->close();
+                        $conncected =true;
+                    }else{
+                    }
+                    write_log("After auth von Scheißdreck");
+                }else{
+                    write_log("No Auth von Scheißdreck");
+                    if ($mqtt->connect()) {
+                        $mqtt->close();
+                        $conncected =true;
+                    }else{
+                        
+                    }
+                    write_log("After No Auth von Scheißdreck");
+                }
 
-            }else{
-                $conncected = false;
-            }
+
+
+         
         }catch(Exeption $e){
-
+            
         }
         
         $respObj = [
             'connected' => $conncected
         ];
         $response = rest_ensure_response( $respObj );
-
+        write_log($conncected);
+        write_log("Ende von Scheißdreck");
         return $response;
     }
 

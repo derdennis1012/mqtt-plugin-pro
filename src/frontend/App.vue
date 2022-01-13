@@ -2,7 +2,7 @@
   <div class="">
     <div class="shadow p-3 mb-5 bg-white rounded">
       <div
-        class="d-flex align-items-top justify-content-between "
+        class="d-flex align-items-top justify-content-between"
         v-if="latestValue"
       >
         <div>
@@ -62,7 +62,8 @@ export default {
         body: JSON.stringify({ topic: "ferries" }),
       };
       const response = await fetch(
-        self.found.site_url + "/wp-json/myapp/v1/mqtt-functions/get-latest",
+        self.found.site_url +
+          "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/get-latest",
         requestOptions
       );
       const data = await response.json();

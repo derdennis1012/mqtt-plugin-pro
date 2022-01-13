@@ -33,7 +33,7 @@ class SettingsPage extends WP_REST_Controller {
      * [__construct description]
      */
     public function __construct() {
-        $this->namespace = 'myapp/v1';
+        $this->namespace = 'mqtt-plugin-pro/v1';
         $this->rest_base = 'settings';
         global $wpdb;
         $this->wpdb = $wpdb;
@@ -115,6 +115,18 @@ class SettingsPage extends WP_REST_Controller {
                 ]
             ]
         );
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->rest_base . '/check-connection',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'check_connection' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ]
+            ]
+        );
     }
 
 
@@ -124,7 +136,14 @@ class SettingsPage extends WP_REST_Controller {
         //$MQTTFN->mqtt_subscribe();
         write_log( "DONE MQTT" );
     }
-
+    public function check_connection($request){
+        $mqtt_pro_mqtt_url = isset( $request['mqtt_pro_mqtt_url'] ) ? $request['mqtt_pro_mqtt_url'] : '';
+        $mqtt_pro_mqtt_port = isset( $request['mqtt_pro_mqtt_port'] ) ? $request['mqtt_pro_mqtt_port']: '';
+        $mqtt_pro_mqtt_client_id = isset( $request['mqtt_pro_mqtt_client_id'] ) ?$request['mqtt_pro_mqtt_client_id'] : '';
+        $mqtt_pro_requires_auth = isset( $request['mqtt_pro_requires_auth'] ) ? $request['mqtt_pro_requires_auth'] : 'false';
+        $mqtt_pro_mqtt_user = isset( $request['mqtt_pro_mqtt_user'] ) ? $request['mqtt_pro_mqtt_user'] : '';
+        $mqtt_pro_mqtt_password = isset( $request['mqtt_pro_mqtt_password'] ) ? $request['mqtt_pro_mqtt_password'] : '';
+    }
     public function activate_service(){
         write_log("Go into activate service....");
         do_action( 'mqtt_disable',null);

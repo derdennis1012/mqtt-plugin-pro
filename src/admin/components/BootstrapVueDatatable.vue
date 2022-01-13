@@ -4,7 +4,6 @@
 
 
 <script>
-
 var elmnts = document.querySelectorAll("[data-pk-atts]");
 
 export default {
@@ -31,7 +30,7 @@ export default {
 
   methods: {
     removeRowHandler(index) {
-            var self = this;
+      var self = this;
 
       const requestOptions = {
         method: "POST",
@@ -40,13 +39,14 @@ export default {
       };
       fetch(
         self.found.site_url +
-          "/wp-json/myapp/v1/mqtt-functions/delete/"+ index,
+          "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/delete/" +
+          index,
         requestOptions
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
-          self.getQueries()
+          console.log(data);
+          self.getQueries();
         });
     },
     async getQueries() {
@@ -58,13 +58,12 @@ export default {
         body: JSON.stringify({}),
       };
       fetch(
-        self.found.site_url +
-          "/wp-json/myapp/v1/mqtt-functions/get",
+        self.found.site_url + "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/get",
         requestOptions
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
+          console.log(data);
         });
     },
   },

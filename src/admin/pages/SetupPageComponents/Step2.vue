@@ -348,7 +348,7 @@ export default {
         const id = setTimeout(() => controller.abort(), timeout);
         response = await fetch(
           self.found.site_url +
-            "/wp-json/myapp/v1/mqtt-functions/test-connection-without",
+            "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/test-connection-without",
           {
             ...requestOptions,
             signal: controller.signal,
