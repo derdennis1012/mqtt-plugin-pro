@@ -23,6 +23,7 @@
     "moment": "^2.29.1",
     "vee-validate": "^3.4.14",
     "vue": "^2.6.11",
+    "vue-confetti": "^2.2.2",
     "vue-router": "^3.4.3"
   },
   "devDependencies": {

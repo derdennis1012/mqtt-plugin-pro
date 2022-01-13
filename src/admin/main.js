@@ -35,6 +35,10 @@ import moment from "moment";
 
 Vue.prototype.moment = moment;
 
+import VueConfetti from "vue-confetti";
+
+Vue.use(VueConfetti);
+
 import { globalMixin } from "./globalMixin";
 Vue.mixin(globalMixin);
 

@@ -113,6 +113,7 @@
       :data="steps"
       @nextStep="() => {}"
       @goBack="step--"
+      :congrats="congrats"
     />
   </div>
 </template>
@@ -154,6 +155,8 @@ export default {
       loaderImage: require("../../assets/img/loader.png"),
       errorImage: require("../../assets/img/500.png"),
       successImage: require("../../assets/img/200.png"),
+      congrats: require("../../assets/img/happy.png"),
+
       acceptedTerms: false,
       steps: {
         1: { acceptedTerms: true, testPassed: false },

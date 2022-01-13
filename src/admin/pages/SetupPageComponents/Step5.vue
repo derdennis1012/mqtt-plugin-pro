@@ -8,7 +8,7 @@
             :icon="['fal', 'chevron-left']" /></span
         >5. Setup done
       </h1>
-      <div>
+      <div v-if="!checkRunning && !finished">
         <h4>Summary</h4>
         <div class="mt-3">
           <h5>MQTT Broker</h5>
@@ -65,10 +65,24 @@
         <div class="mt-3">
           <h5>Topics</h5>
           <div
-            class="d-flex flex-row flex-nowrap w-100 overflow-scroll scroll-container-custom"
+            class="
+              d-flex
+              flex-row flex-nowrap
+              w-100
+              overflow-scroll
+              scroll-container-custom
+            "
           >
             <div
-              class="m-2 p-4 border rounded topic-card d-flex align-items-center"
+              class="
+                m-2
+                p-4
+                border
+                rounded
+                topic-card
+                d-flex
+                align-items-center
+              "
               v-for="(item, key) in settingsObj.mqtt_pro_mqtt_topics_arr"
               :key="key"
             >
@@ -79,7 +93,15 @@
         <div class="mt-3">
           <h5>TTL</h5>
           <div
-            class="bg-light-danger border rounded p-2 d-flex justify-content-start align-items-center"
+            class="
+              bg-light-danger
+              border
+              rounded
+              p-2
+              d-flex
+              justify-content-start
+              align-items-center
+            "
           >
             <div>
               <b-avatar
@@ -100,6 +122,154 @@
             </div>
           </div>
         </div>
+        <b-btn @click="saveSetings()" variant="primary" block class="mt-3"
+          >Save & activate</b-btn
+        >
+      </div>
+      <div v-if="checkRunning" class="h-100">
+        <div class="h-100 w-100 m-4 p-4">
+          <h4>Validating your Input</h4>
+          <b-list-group>
+            <b-list-group-item
+              class="
+                list-group-item
+                d-flex
+                justify-content-start
+                align-items-center
+              "
+            >
+              <div class="mr-2">
+                <b-spinner v-if="checkResults[0] == 'running'"></b-spinner>
+                <font-awesome-icon
+                  v-if="checkResults[0] === false"
+                  :icon="['fad', 'times-circle']"
+                  class="text-danger"
+                  size="2x"
+                ></font-awesome-icon>
+                <font-awesome-icon
+                  v-if="checkResults[0] === null"
+                  :icon="['fad', 'question-circle']"
+                  size="2x"
+                ></font-awesome-icon>
+
+                <font-awesome-icon
+                  v-if="checkResults[0] === true"
+                  :icon="['fad', 'check-circle']"
+                  class="text-success"
+                  size="2x"
+                ></font-awesome-icon>
+              </div>
+
+              Validating settings
+            </b-list-group-item>
+            <b-list-group-item
+              class="
+                list-group-item
+                d-flex
+                justify-content-start
+                align-items-center
+              "
+            >
+              <div class="mr-2">
+                <b-spinner v-if="checkResults[1] == 'running'"></b-spinner>
+                <font-awesome-icon
+                  v-if="checkResults[1] === false"
+                  :icon="['fal', 'times-circle']"
+                  class="text-danger"
+                  size="2x"
+                ></font-awesome-icon>
+                <font-awesome-icon
+                  v-if="checkResults[1] === null"
+                  :icon="['fad', 'question-circle']"
+                  size="2x"
+                ></font-awesome-icon>
+
+                <font-awesome-icon
+                  v-if="checkResults[1] === true"
+                  :icon="['fad', 'check-circle']"
+                  class="text-success"
+                  size="2x"
+                ></font-awesome-icon>
+              </div>
+
+              Checking MQTT connection
+            </b-list-group-item>
+            <b-list-group-item
+              class="
+                list-group-item
+                d-flex
+                justify-content-start
+                align-items-center
+              "
+            >
+              <div class="mr-2">
+                <b-spinner v-if="checkResults[2] == 'running'"></b-spinner>
+                <font-awesome-icon
+                  v-if="checkResults[2] === false"
+                  :icon="['fad', 'times-circle']"
+                  class="text-danger"
+                  size="2x"
+                ></font-awesome-icon>
+                <font-awesome-icon
+                  v-if="checkResults[2] === null"
+                  :icon="['fad', 'question-circle']"
+                  size="2x"
+                ></font-awesome-icon>
+
+                <font-awesome-icon
+                  v-if="checkResults[2] === true"
+                  :icon="['fad', 'check-circle']"
+                  class="text-success"
+                  size="2x"
+                ></font-awesome-icon>
+              </div>
+
+              Send your settings to Server
+            </b-list-group-item>
+            <b-list-group-item
+              class="
+                list-group-item
+                d-flex
+                justify-content-start
+                align-items-center
+              "
+            >
+              <div class="mr-2">
+                <b-spinner v-if="checkResults[3] == 'running'"></b-spinner>
+                <font-awesome-icon
+                  v-if="checkResults[3] === false"
+                  :icon="['fad', 'times-circle']"
+                  class="text-danger"
+                  size="2x"
+                ></font-awesome-icon>
+                <font-awesome-icon
+                  v-if="checkResults[3] === null"
+                  :icon="['fad', 'question-circle']"
+                  size="2x"
+                ></font-awesome-icon>
+
+                <font-awesome-icon
+                  v-if="checkResults[3] === true"
+                  :icon="['fad', 'check-circle']"
+                  class="text-success"
+                  size="2x"
+                ></font-awesome-icon>
+              </div>
+
+              Activating MQTT service
+            </b-list-group-item>
+          </b-list-group>
+        </div>
+      </div>
+      <div v-if="!checkRunning && finished">
+        <div class="mt-3">
+          <h2 class="text-center">Congratulations!</h2>
+          <img class="mt-2" :src="congrats" width="100%" style="margin: auto" />
+          <h1 class="text-center mt-2">
+            The <b>MQTT Plugin Pro</b> is successfully configured. You can now
+            start receiving your MQTT Data
+          </h1>
+        </div>
       </div>
     </div>
 
@@ -114,11 +284,24 @@ export default {
       type: Object,
       required: true,
     },
+    congrats: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       dataObj: {},
       settingsObj: null,
+      checkRunning: false,
+      finished: false,
+      cCheckStep: 0,
+      checkResults: {
+        0: null,
+        1: null,
+        2: null,
+        3: null,
+      },
     };
   },
   methods: {
@@ -131,8 +314,74 @@ export default {
     makeAlert(title, body) {
       alert(title, body);
     },
-    saveSetings() {},
-    convertToSettingsObj() {
+    async checkConncection() {
+      await this.timeout(3000);
+      return true;
+    },
+    async sendSettingsToServer() {
+      await this.timeout(3000);
+      return true;
+    },
+    async checkSettings() {
+      var self = this;
+      this.$set(self.checkResults, 0, "running");
+
+      var settingsobj = await self.convertToSettingsObj();
+      if (!settingsobj) {
+        this.$set(self.checkResults, 0, false);
+
+        return false;
+      }
+      this.$set(self.checkResults, 0, true);
+
+      this.$set(self.checkResults, 1, "running");
+
+      var r = await self.checkConncection();
+      if (!r) {
+        this.$set(self.checkResults, 1, false);
+
+        return false;
+      }
+      this.$set(self.checkResults, 1, true);
+      this.$set(self.checkResults, 2, "running");
+
+      r = await self.sendSettingsToServer();
+      if (!r) {
+        this.$set(self.checkResults, 2, false);
+
+        return false;
+      }
+      this.$set(self.checkResults, 2, true);
+
+      this.$set(self.checkResults, 3, "running");
+
+      r = await self.sendSettingsToServer();
+      if (!r) {
+        this.$set(self.checkResults, 3, false);
+
+        return false;
+      }
+      this.$set(self.checkResults, 3, true);
+
+      return true;
+    },
+    async timeout(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    async saveSetings() {
+      var self = this;
+      self.checkRunning = true;
+      try {
+        await self.checkSettings();
+      } catch (e) {
+        console.log(e);
+      }
+      await self.timeout(800);
+      self.checkRunning = false;
+      self.finished = true;
+      self.showConfetti();
+    },
+    async convertToSettingsObj() {
       var self = this;
       var settingsObj = {
         mqtt_pro_mqtt_url: null,
@@ -186,7 +435,13 @@ export default {
       settingsObj.mqtt_pro_mqtt_ttl = self.data[4].ttl;
       settingsObj.mqtt_pro_active = false;
       this.settingsObj = settingsObj;
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       return settingsObj;
+    },
+    showConfetti() {
+      var self = this;
+      self.$confetti.start();
     },
   },
   async created() {
