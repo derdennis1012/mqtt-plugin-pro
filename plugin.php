@@ -103,6 +103,16 @@ function my_cron_schedules($schedules){
             'interval' => 1440*60,
             'display' => __('Once every day'));
     }
+    if(!isset($schedules["3d"])){
+        $schedules["3d"] = array(
+            'interval' => 4320*60,
+            'display' => __('Once every 3 days'));
+    }
+    if(!isset($schedules["1w"])){
+        $schedules["1w"] = array(
+            'interval' => 10080*60,
+            'display' => __('Once every week'));
+    }
     write_log( "Created Scheduler!" );
 
     return $schedules;
