@@ -61,7 +61,7 @@ function my_cron_schedules($schedules){
     if(!isset($schedules["30sec"])){
         $schedules["30sec"] = array(
             'interval' => 0,5*60,
-            'display' => __('Once every 30 Seconds'));
+            'display' => __('Once every 30 seconds'));
     }
     if(!isset($schedules["1min"])){
         $schedules["1min"] = array(
