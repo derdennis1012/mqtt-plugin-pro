@@ -12,6 +12,7 @@ export const globalMixin = {
   data() {
     return {
       ...data,
+      intervals:[]
     };
   },
   methods: {

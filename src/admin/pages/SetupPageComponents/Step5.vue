@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
-    <div class="mt-4">
+    <div class="mt-4" v-if="loaded">
       <h1 class="mb-4">
         <span @click="$emit('goBack')">
           <font-awesome-icon
@@ -292,6 +292,7 @@ export default {
   data() {
     return {
       dataObj: {},
+      loaded: false,
       settingsObj: null,
       checkRunning: false,
       finished: false,
@@ -315,8 +316,18 @@ export default {
       alert(title, body);
     },
     async checkConncection() {
-      await this.timeout(3000);
-      return true;
+      var self = this;
+      var settingsOBJ = await self.convertToSettingsObj();
+
+      var res = await self.sendPostReqG(
+        "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/test-connection-without",
+        settingsOBJ
+      );
+      await this.timeout(200);
+      console.log(res);
+
+      if (res) return true;
+      else return false;
     },
     async sendSettingsToServer() {
       var settingsOBJ = self.convertToSettingsObj();
@@ -324,6 +335,18 @@ export default {
         "/wp-json/mqtt-plugin-pro/v1/settings",
         settingsOBJ
       );
+      await this.timeout(1000);
+      console.log(res);
+
+      if (res) return true;
+      else return false;
+    },
+    async activateService() {
+      var res = await self.sendGetReqG(
+        "/wp-json/mqtt-plugin-pro/v1/settings/activate"
+      );
+      await this.timeout(1000);
+      console.log(res);
       if (res) return true;
       else return false;
     },
@@ -451,6 +474,8 @@ export default {
   },
   async created() {
     var self = this;
+    self.settingsObj = await self.convertToSettingsObj();
+    self.loaded = true;
   },
 };
 </script>
