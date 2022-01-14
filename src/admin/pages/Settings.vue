@@ -2,7 +2,7 @@
   <div>
     <h4>MQTT Pro Plug-In Settings Page</h4>
     <validation-observer ref="simpleRules">
-      <span class="text-muted"
+      <!--span class="text-muted"
         >Please select the option that maches your MQTT Broker</span
       >
       <div>
@@ -46,12 +46,13 @@
             (!testRunning || testResult !== null)
           "
         ></div>
-      </div>
+      </div-->
 
-      <div v-if="settingsData.isSecured == true">
+      <!--div v-if="settingsData.isSecured == true"-->
+      <div>
         <b-form>
           <b-row>
-            <b-col md="6">
+            <b-col md="3">
               <b-form-group label="Username:">
                 <validation-provider
                   #default="{ errors }"
@@ -68,7 +69,7 @@
                 </validation-provider>
               </b-form-group>
             </b-col>
-            <b-col md="6">
+            <b-col md="3">
               <b-form-group label="Password:">
                 <validation-provider
                   #default="{ errors }"
@@ -179,7 +180,7 @@
           </b-row>
         </div>
 
-        <!--div>
+        <div>
           <b-row>
             
             <b-col md="3">
@@ -221,7 +222,7 @@
               </b-form-group>
             </b-col>
           </b-row>
-        </div-->
+        </div>
 
         <div>
           <b-row>
@@ -302,13 +303,12 @@
 
         <div>
           <b-row>
-            <!-- submit button  :disabled="!inputPassed"-->
             <b-col cols="12">
               <b-button
                 variant="primary"
                 type="submit"
                 @click.prevent="checkForm"
-                :disabled="!connected"
+                :disabled="!inputPassed && (connected==null || !connected)"
               >
                 Save Settings
               </b-button>
@@ -319,11 +319,10 @@
     </validation-observer>
 
     <!--Cards-->
-    <!--ToDo: check card verwandelt sich zu success oder error-->
     <div>
       <b-card-group deck>
         <b-card
-          v-if="testPassed == null"
+          v-if="inputPassed == true && !connected"
           bg-variant="secondary"
           text-variant="white"
           class="text-center"
@@ -340,7 +339,7 @@
 
         <!---->
         <b-card
-          v-if="inputPassed === true"
+          v-if="connected === true"
           bg-variant="success"
           text-variant="white"
           class="text-center"
@@ -355,7 +354,7 @@
         </b-card>
 
         <b-card
-          v-if="inputPassed === false"
+          v-if="connected === false"
           bg-variant="danger"
           text-variant="white"
           class="text-center"
@@ -403,7 +402,8 @@ export default {
       renderComponent: false,
       inputPassed: false,
       testRunning: false,
-      connected: false,
+      connected: null,
+      customPort: false,
     };
   },
 
@@ -453,6 +453,11 @@ export default {
       this.connected = true;
     },
     async checkForm() {
+
+      //Wenn mqtt_port != 1883 dann customPort = true
+      if(this.mqtt_pro_mqtt_port != 1883){
+        this.customPort = true;
+      }
       var self = this;
       var res = false;
       console.log("test");
