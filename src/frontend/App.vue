@@ -1,27 +1,34 @@
 <template>
   <div class="">
-    <div class="shadow p-3 mb-5 bg-white rounded">
+    <div
+      :class="`shadow p-3 mb-1 bg-white rounded ${
+        error ? 'bg-light-danger' : ''
+      }`"
+      v-if="found"
+    >
       <div
         class="d-flex align-items-top justify-content-between"
         v-if="latestValue"
       >
         <div>
-          <h1 class="mb-0 pb-0">
+          <h1 class="mb-0 pb-0 value-text">
             {{ parseFloat(latestValue.DataSet).toFixed(2)
-            }}<sup class="upper">°C</sup>
+            }}<b class="ml-2 suffix-text">{{ found.suffix }}</b>
           </h1>
           <div class="text-muted">
-            <b-badge :variant="`${diff > 1 ? 'danger' : 'success'}`">{{
-              `${diff > 1 ? "OFFLINE" : "ONLINE"}`
+            <b-badge :variant="`${diff > 5 ? 'danger' : 'success'}`">{{
+              `${diff > 5 ? "OFFLINE" : "ONLINE"}`
             }}</b-badge>
             <span class="text-muted">
               Last value {{ moment(latestValue.RecordCreated).fromNow() }}
             </span>
           </div>
         </div>
-        <b-avatar variant="primary" icon="people-fill"></b-avatar>
+        <b-avatar variant="primary"
+          ><font-awesome-icon :icon="['fad', found.icon]"></font-awesome-icon
+        ></b-avatar>
       </div>
-      <div v-else>
+      <div v-else-if="!error">
         <div class="d-flex justify-content-between">
           <b-skeleton type="input" width="50%"></b-skeleton>
 
@@ -32,6 +39,9 @@
 
           <b-skeleton width="50%"></b-skeleton>
         </div>
+      </div>
+      <div v-else-if="error">
+        Could not receive MQTT Data, ask the site administrator for help
       </div>
     </div>
   </div>
@@ -51,6 +61,7 @@ export default {
       dateObj: this.moment(),
       diff: 0,
       latestValue: null,
+      error: false,
     };
   },
   methods: {
@@ -59,7 +70,7 @@ export default {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: "ferries" }),
+        body: JSON.stringify({ topic: self.found.topic }),
       };
       const response = await fetch(
         self.found.site_url +
@@ -67,7 +78,18 @@ export default {
         requestOptions
       );
       const data = await response.json();
-      self.latestValue = data.res;
+      if (data.res) {
+        self.latestValue = data.res;
+        self.diff =
+          self.moment
+            .duration(
+              this.moment(self.latestValue.RecordCreated).diff(self.dateObj)
+            )
+            .asMinutes()
+            .toFixed(0) * -1;
+      } else {
+        self.error = true;
+      }
     },
   },
   async created() {
@@ -82,14 +104,8 @@ export default {
       }
     }
     self.found = fElment;
+    if (!self.found.icon) self.found.icon = "poo";
     await self.getLatest();
-    self.diff =
-      self.moment
-        .duration(
-          this.moment(self.latestValue.RecordCreated).diff(self.dateObj)
-        )
-        .asMinutes()
-        .toFixed(0) * -1;
   },
 };
 </script>
@@ -12567,5 +12583,16 @@ a.text-dark:hover {
 }
 .h-100 {
   height: 80vh !important;
+}
+.bg-light-danger {
+  color: rgba(255, 61, 113, 1);
+  background: rgba(255, 61, 113, 0.12) !important;
+}
+
+.suffix-text {
+  font-weight: 600 !important;
+}
+.value-text {
+  font-weight: 300 !important;
 }
 </style>

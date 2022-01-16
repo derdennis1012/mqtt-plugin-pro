@@ -2,13 +2,21 @@
   <div class="d-flex flex-column justify-content-between h-100">
     <div class="mt-4" v-if="loaded">
       <h1 class="mb-4">
-        <span @click="$emit('goBack')" v-if="!finished">
+        <span @click="goBack()" v-if="!finished">
           <font-awesome-icon
             class="mr-3"
             :icon="['fal', 'chevron-left']" /></span
         >5. Setup done
       </h1>
       <div v-if="!checkRunning && !finished">
+        <b-alert
+          :show="finished === false"
+          dismissible
+          variant="danger"
+          @dismissed="finished = null"
+        >
+          <p>Something didn't work. Please try again later when you're ready</p>
+        </b-alert>
         <h4>Summary</h4>
         <div class="mt-3">
           <h5>MQTT Broker</h5>
@@ -44,8 +52,9 @@
                     <div>
                       <span class="text-muted">Interval:</span><br />
                       <span>
-                        Every
-                        <b>{{ settingsObj.mqtt_pro_mqtt_interval }}</b> seconds
+                        {{
+                          getIntervalLabel(settingsObj.mqtt_pro_mqtt_interval)
+                        }}
                       </span>
                     </div>
                   </div>
@@ -128,7 +137,7 @@
       </div>
       <div v-if="checkRunning" class="h-100">
         <div class="h-100 w-100 m-4 p-4">
-          <h4>Validating your Input</h4>
+          <h4>Validating your input</h4>
           <b-list-group>
             <b-list-group-item
               class="
@@ -273,7 +282,13 @@
       </div>
     </div>
 
-    <b-button variant="success" block @click="checkNextStep">Finish</b-button>
+    <b-button
+      variant="success"
+      block
+      @click="checkNextStep"
+      :disabled="!finished"
+      >Finish</b-button
+    >
   </div>
 </template>
 <script>
@@ -295,7 +310,7 @@ export default {
       loaded: false,
       settingsObj: null,
       checkRunning: false,
-      finished: false,
+      finished: null,
       cCheckStep: 0,
       checkResults: {
         0: null,
@@ -315,6 +330,10 @@ export default {
     makeAlert(title, body) {
       alert(title, body);
     },
+    goBack() {
+      this.$emit("goBack");
+      this.$confetti.stop();
+    },
     async checkConncection() {
       var self = this;
       var settingsOBJ = await self.convertToSettingsObj();
@@ -326,15 +345,16 @@ export default {
       await this.timeout(1000);
       console.log(res);
 
-      if (res) return true;
+      if (res.connected) return true;
       else return false;
     },
     async sendSettingsToServer() {
       var self = this;
-      var settingsOBJ = self.convertToSettingsObj();
+      var settingsobj = await self.convertToSettingsObj();
+      console.log(settingsobj);
       const res = await self.sendPostReqG(
         "/wp-json/mqtt-plugin-pro/v1/settings",
-        settingsOBJ
+        settingsobj
       );
       await this.timeout(2000);
       console.log(res);
@@ -416,6 +436,12 @@ export default {
       } else {
         self.checkRunning = false;
         self.finished = false;
+        self.checkResults = {
+          0: null,
+          1: null,
+          2: null,
+          3: null,
+        };
       }
     },
     async convertToSettingsObj() {

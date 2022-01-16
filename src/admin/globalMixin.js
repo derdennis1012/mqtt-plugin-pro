@@ -12,13 +12,22 @@ export const globalMixin = {
   data() {
     return {
       ...data,
-      intervals:[
-        {label:"Once every 30 seconds" , code: "30sec"}, {label:"Once every minute" , code: "1min"}, {label:"Once every 5 minutes" , code: "5min"}, {label:"Once every 15 minutes" , code: "15min"}, {label:"Once every 30 minutes" , code: "30min"}, {label:"Once every hour" , code: "1h"}, {label:"Once every 3 hours" , code: "3h"}, {label:"Once every 5 hours" , code: "5h"}, {label:"Once every day" , code: "1d"}, {label:"Once every 3 days" , code: "3d"}, {label:"Once every week" , code: "1w"}]
+      timeIntervals:[
+        {label:"Once every 30 seconds" , key: "30sec"}, {label:"Once every minute" , key: "1min"}, {label:"Once every 5 minutes" , key: "5min"}, {label:"Once every 15 minutes" , key: "15min"}, {label:"Once every 30 minutes" , key: "30min"}, {label:"Once every hour" , key: "1h"}, {label:"Once every 3 hours" , key: "3h"}, {label:"Once every 5 hours" , key: "5h"}, {label:"Once every day" , key: "1d"}, {label:"Once every 3 days" , key: "3d"}, {label:"Once every week" , key: "1w"}]
     };
   },
   methods: {
     getSiteURLG() {
       return this.siteURLG;
+    },
+    getIntervalLabel(key){
+      var ret = null;
+      for(const i in this.timeIntervals){
+        if(this.timeIntervals[i].key == key){
+          ret =  this.timeIntervals[i].label
+        }
+      }
+      return ret;
     },
     async sendPostReqG(path, body = {}) {
       var self = this;
@@ -28,10 +37,16 @@ export const globalMixin = {
         body: JSON.stringify(body),
       };
       var res = await fetch(self.getSiteURLG() + path, requestOptions);
+      var ret = false;
       if (res.status == 200) {
-        return res.json();
+        try{
+          ret = res.json();
+        }catch(e){
+          ret = false;
+        }
       }
-      return false;
+      console.log(ret)
+      return ret;
     },
     async sendGetReqG(path) {
       var self = this;

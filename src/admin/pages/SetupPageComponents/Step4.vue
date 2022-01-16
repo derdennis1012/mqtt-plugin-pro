@@ -15,20 +15,23 @@
             >This is the interval in which the <b>MQTT Plugin Pro</b> tries to
             receive data from the MQTT Broker.</span
           >
-          <b-form-group label="Interval (seconds)" class="mt-2">
+
+          <b-form-group label="Interval" class="mt-2">
             <validation-provider
               #default="{ errors }"
               name="Interval"
               rules="required"
             >
-              <b-form-input
-                @input="checkForm()"
+              <v-select
+                :options="timeIntervals"
                 v-model="data.interval"
-                label="Test"
-                type="number"
+                :reduce="(item) => item.key"
+                @option:selected="checkForm()"
+                @input="checkForm()"
                 :state="errors.length > 0 ? false : null"
-                placeholder="Interval (seconds)"
-              />
+                placeholder="Interval"
+                :clearable="false"
+              ></v-select>
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
           </b-form-group>
@@ -107,6 +110,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "../../validations/validations";
+import "vue-select/dist/vue-select.css";
 
 export default {
   name: "Step4",

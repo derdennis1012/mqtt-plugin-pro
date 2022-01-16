@@ -44,6 +44,12 @@ Vue.mixin(globalMixin);
 
 Vue.config.productionTip = false;
 
+
+import vSelect from 'vue-select';
+Vue.component('v-select', vSelect);
+import 'vue-select/dist/vue-select.css';
+
+
 /* eslint-disable no-new */
 new Vue({
   el: "#vue-admin-app",

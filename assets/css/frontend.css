@@ -12462,4 +12462,14 @@ body[data-v-82d33a46] {
 .h-100[data-v-82d33a46] {
   height: 80vh !important;
 }
+.bg-light-danger[data-v-82d33a46] {
+  color: rgba(255, 61, 113, 1);
+  background: rgba(255, 61, 113, 0.12) !important;
+}
+.suffix-text[data-v-82d33a46] {
+  font-weight: 600 !important;
+}
+.value-text[data-v-82d33a46] {
+  font-weight: 300 !important;
+}
 

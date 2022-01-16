@@ -183,8 +183,10 @@ class SettingsPage extends WP_REST_Controller {
         $respObj = [
             'activated' =>  $activated,
         ];
-        write_log( "Disabled" );
+        write_log( "Disabled - NOW" );
         //Hook beenden
+        wp_clear_scheduled_hook('woocsp_cron_delivery');
+
         do_action( 'mqtt_disable',null);
         update_option( 'mqtt_pro_active', $activated );
 

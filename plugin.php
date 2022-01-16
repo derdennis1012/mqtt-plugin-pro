@@ -160,7 +160,6 @@ final class MQTT_Plugin_Pro {
         add_action( 'mqtt_disable', array( $this, 'disable_the_hook') );
 
 	
-        do_action( 'mqtt_get',null);
         add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
         add_action( 'woocsp_cron_delivery', array( $this, 'scheduleTriggered') );
 

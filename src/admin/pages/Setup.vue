@@ -149,7 +149,7 @@ export default {
     return {
       value: "",
       settingsData: {},
-      step: 4,
+      step: 0,
       connectionWorks: false,
       image: require("../../assets/img/mqtt-pro-logo.png"),
       loaderImage: require("../../assets/img/loader.png"),
@@ -159,21 +159,21 @@ export default {
 
       acceptedTerms: false,
       steps: {
-        1: { acceptedTerms: true, testPassed: false },
+        1: { acceptedTerms: false, testPassed: false },
         2: {
-          url: "141.28.73.33",
-          isSecured: false,
-          ClientID: "pretty_pb&j2190",
+          url: "",
+          isSecured: null,
+          ClientID: "",
           username: "",
           password: "",
-          port: "80",
-          testPassed: true,
+          port: "",
+          testPassed: false,
           testRunning: false,
           formPassed: false,
           isCustomPort: true,
         },
-        3: { topics: ["Test", "123"], testPassed: false },
-        4: { ttl: null, keepData: true, interval: "20", testPassed: true },
+        3: { topics: [], testPassed: false },
+        4: { ttl: null, keepData: true, interval: null, testPassed: false },
       },
     };
   },

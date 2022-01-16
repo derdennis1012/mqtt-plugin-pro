@@ -30,7 +30,7 @@ class Frontend {
             $format = $atts['format'];
         }else $format = null;
         if(isset($atts['suffix'])){
-            $suffix = $atts['forsuffixmat'];
+            $suffix = $atts['suffix'];
         }else $suffix = "";
      $id = uniqid();
         $url = get_site_url();
