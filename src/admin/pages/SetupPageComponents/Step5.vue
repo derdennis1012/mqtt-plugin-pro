@@ -511,6 +511,10 @@ export default {
     self.settingsObj = await self.convertToSettingsObj();
     self.loaded = true;
   },
+  beforeDestroy() {
+    var self = this;
+    self.$confetti.stop();
+  },
 };
 
 [{ label: "1 Minute", code: "1min" }, {}];

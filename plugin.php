@@ -293,11 +293,13 @@ final class MQTT_Plugin_Pro {
     public function register_the_hook(){
         write_log("Wenn das nicht klappt rast ich aus!");
         $cStatus =  get_option( 'mqtt_pro_active', false );
+        $interval =  get_option( 'mqtt_pro_mqtt_interval', false );
+
         write_log($cStatus.'Hello??');
         wp_clear_scheduled_hook('woocsp_cron_delivery');
         if ( true ) {
             write_log($cStatus.'Hat geklappt...');
-            wp_schedule_event( time(), '1min', 'woocsp_cron_delivery' );
+            wp_schedule_event( time(), ''.$interval, 'woocsp_cron_delivery' );
         }else{
             write_log('Scheiße .. nicht ausrasten....');
         }
