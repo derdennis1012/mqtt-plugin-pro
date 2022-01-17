@@ -1,4 +1,4 @@
-<?php
+<?php global 
 /*
 Plugin Name: MQTT Plugin Pro
 Plugin URI: https://hs-furtwangen.de/
@@ -149,6 +149,9 @@ final class MQTT_Plugin_Pro {
      */
     public function __construct() {
 
+        global $wpdb;
+        $this->wpdb = $wpdb;
+
         $this->define_constants();
     
 
@@ -164,6 +167,7 @@ final class MQTT_Plugin_Pro {
 	
         add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
         add_action( 'woocsp_cron_delivery', array( $this, 'scheduleTriggered') );
+        add_action( 'wp_clean_database', array( $this, 'cleandatabase') );
 
     }
 
@@ -206,6 +210,18 @@ final class MQTT_Plugin_Pro {
         write_log( "Scheduler triggered!" );
         //@ToDo -> loop -> array -> get_m... mit Parameter Topic aufrufen
         $this->get_mqtt_data();
+    }
+
+    function cleandatabase() {
+        write_log( "Cleaning Database!" );
+        $ttl =  get_option( 'mqtt_pro_mqtt_ttl', false );
+        if($ttl != ""){
+            $ttl_int=(int)$ttl;
+            $table_name = $this->wpdb->prefix . "mqtt_pro_data";
+            $sql = "DELETE FROM `".$table_name."` WHERE(SELECT * FROM `".$table_name."` WHERE RecordCreated < DATE_SUB(DATE(now()), INTERVAL '".$ttl_int."' DAY));";
+            $this->wpdb->query($sql);
+        }
+        return;
     }
     /**
      * Magic isset to bypass referencing plugin.
@@ -316,9 +332,11 @@ final class MQTT_Plugin_Pro {
 
         write_log($cStatus.'Hello??');
         wp_clear_scheduled_hook('woocsp_cron_delivery');
+        wp_clear_scheduled_hook('wp_clean_database');
         if ( true ) {
             write_log($cStatus.'Hat geklappt...');
             wp_schedule_event( time(), ''.$interval, 'woocsp_cron_delivery' );
+            wp_schedule_event( time(), '1d', 'wp_clean_database' );
         }else{
             write_log('Scheiße .. nicht ausrasten....');
         }
