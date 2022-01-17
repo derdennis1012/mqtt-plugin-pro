@@ -1,4 +1,4 @@
-<?php global 
+<?php 
 /*
 Plugin Name: MQTT Plugin Pro
 Plugin URI: https://hs-furtwangen.de/
