@@ -2,7 +2,7 @@
   <div class="d-flex flex-column justify-content-between h-100">
     <div class="mt-4" v-if="loaded">
       <h1 class="mb-4">
-        <span @click="goBack()" v-if="!finished">
+        <span @click="goBack()" v-if="!finished && !checkRunning">
           <font-awesome-icon
             class="mr-3"
             :icon="['fal', 'chevron-left']" /></span
@@ -322,7 +322,7 @@ export default {
   },
   methods: {
     nextStep() {
-      this.$emit("nextStep");
+      this.$router.push({ path: "/about" });
     },
     checkNextStep() {
       this.nextStep();
@@ -348,6 +348,7 @@ export default {
       if (res.connected) return true;
       else return false;
     },
+
     async sendSettingsToServer() {
       var self = this;
       var settingsobj = await self.convertToSettingsObj();

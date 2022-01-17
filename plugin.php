@@ -155,8 +155,10 @@ final class MQTT_Plugin_Pro {
         $this->define_constants();
     
 
-        register_activation_hook( __FILE__, array( $this, 'activate' ) );
+        register_activation_hook( __FILE__, array( $this, 'activate' ),array( $this, 'activate' ) );
         register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+        
+        add_action( 'admin_init', array( $this, 'my_plugin_redirect' ) );
 
 
         add_action( 'mqtt_get', array( $this, 'register_the_hook') );
@@ -290,21 +292,38 @@ final class MQTT_Plugin_Pro {
         }
         include('installer.php');
         
+        
         update_option( 'mqtt_pro_version', mqtt_pro_version );
 
         write_log("Plugin activating.");
 
   
     
-        write_log("Plugin activated.");
+        write_log("Plugin activated.2");
 /*
              //Trigger our method on our custom schedule event.
           
 */
         
        // wp_schedule_event( time(), '5min', 'mqtt_get' );
-    }
+       add_option('my_plugin_do_activation_redirect_', true);
 
+
+    }
+    
+    function my_plugin_redirect() {
+        write_log("Plugin activated.2..");
+
+        if (get_option('my_plugin_do_activation_redirect_', false)) {
+            delete_option('my_plugin_do_activation_redirect_');
+            if(get_option( 'mqtt_pro_mqtt_url','' ) != ''){
+                exit( wp_redirect( admin_url( 'admin.php?page=mqtt-plugin-pro#/setup' ) ));
+
+            }else{
+                exit;
+            }
+        }
+    }
 
     public function register_the_hook(){
         write_log("Wenn das nicht klappt rast ich aus!");

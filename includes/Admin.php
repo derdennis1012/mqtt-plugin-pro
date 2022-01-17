@@ -19,7 +19,7 @@ class Admin {
         global $submenu;
 
         $capability = 'manage_options';
-        $slug       = 'vue-app';
+        $slug       = 'mqtt-plugin-pro';
 
         $hook = add_menu_page( __( 'MQTT PRO', 'textdomain' ), __( 'MQTT PRO', 'textdomain' ), $capability, $slug, [ $this, 'plugin_page' ], 'dashicons-text' );
 
