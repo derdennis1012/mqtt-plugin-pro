@@ -212,7 +212,7 @@ final class MQTT_Plugin_Pro {
 
     function cleandatabase() {
         write_log( "Cleaning Database!" );
-        $ttl =  get_option( 'mqtt_pro_mqtt_ttl', false );
+        $ttl =  get_option( 'mqtt_pro_mqtt_ttl', "" );
         if($ttl != ""){
             $ttl_int=(int)$ttl;
             $table_name = $this->wpdb->prefix . "mqtt_pro_data";
