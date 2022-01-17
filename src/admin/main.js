@@ -57,5 +57,5 @@ new Vue({
   render: (h) => h(App),
 });
 
-// fix the admin menu for the slug "vue-app"
-menuFix("vue-app");
+// fix the admin menu for the slug "mqtt-plugin-pro"
+menuFix("mqtt-plugin-pro");

@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "admin/pages/Home.vue";
 import Settings from "admin/pages/Settings.vue";
 import Setup from "admin/pages/Setup.vue";
+import About from "admin/pages/About.vue";
 
 Vue.use(Router);
 
@@ -22,6 +23,11 @@ export default new Router({
       path: "/setup",
       name: "Setup",
       component: Setup,
+    },
+    {
+      path: "/about",
+      name: "About",
+      component: About,
     },
   ],
 });

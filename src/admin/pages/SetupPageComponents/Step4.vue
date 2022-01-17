@@ -47,10 +47,7 @@
               :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
                 data.keepData ? 'border-primary border-card-lg' : ''
               } w-100`"
-              @click="
-                data.keepData = true;
-                checkForm();
-              "
+              @click="changeTTL(true)"
             >
               <div class="d-flex align-items-center">
                 <b-avatar variant="light-primary" class="mr-2">
@@ -62,10 +59,7 @@
               :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
                 data.keepData === false ? 'border-primary border-card-lg' : ''
               } w-100`"
-              @click="
-                data.keepData = false;
-                checkForm();
-              "
+              @click="changeTTL(false)"
             >
               <div class="d-flex align-items-center">
                 <b-avatar variant="light-primary" class="mr-2">
@@ -140,11 +134,19 @@ export default {
         console.log(e);
         res = false;
       }
+      res = true;
+      if (!self.data.interval) res = false;
+      if (!self.data.ttl && !self.data.keepData) res = false;
       self.$set(self.data, "testPassed", res);
       return res;
     },
     checkNextStep() {
       this.nextStep();
+    },
+    changeTTL(val) {
+      this.data.keepData = val;
+      this.checkForm();
+      this.checkForm();
     },
   },
   created() {

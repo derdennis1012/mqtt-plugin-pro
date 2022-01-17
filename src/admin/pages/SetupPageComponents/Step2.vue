@@ -11,44 +11,47 @@
     </div>
     <div class="h-100 justify-content-top">
       <validation-observer ref="simpleRules">
-        <div class="d-flex align-items-center justify-content-between">
-          <h5>Security</h5>
-        </div>
-        <span class="text-muted"
-          >Please select the option that maches your MQTT Broker</span
-        >
-        <div class="d-flex align-items-center justify-content-between">
-          <div
-            :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
-              data.isSecured ? 'border-primary border-card-lg' : ''
-            } w-100`"
-            @click="data.isSecured = true"
+        <div v-if="testResult == null">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5>Security</h5>
+          </div>
+          <span class="text-muted"
+            >Please select the option that maches your MQTT Broker</span
           >
-            <div class="d-flex align-items-center">
-              <b-avatar
-                variant="light-primary"
-                icon="lock-fill"
-                class="mr-2"
-              ></b-avatar
-              >Yes it is password protected
+          <div class="d-flex align-items-center justify-content-between">
+            <div
+              :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
+                data.isSecured ? 'border-primary border-card-lg' : ''
+              } w-100`"
+              @click="data.isSecured = true"
+            >
+              <div class="d-flex align-items-center">
+                <b-avatar
+                  variant="light-primary"
+                  icon="lock-fill"
+                  class="mr-2"
+                ></b-avatar
+                >Yes it is password protected
+              </div>
+            </div>
+            <div
+              :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
+                data.isSecured == false ? 'border-primary border-card-lg' : ''
+              } w-100`"
+              @click="data.isSecured = false"
+            >
+              <div class="d-flex align-items-center">
+                <b-avatar
+                  variant="light-primary"
+                  icon="unlock-fill"
+                  class="mr-2"
+                ></b-avatar
+                >No its open to acces without password
+              </div>
             </div>
           </div>
-          <div
-            :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
-              data.isSecured == false ? 'border-primary border-card-lg' : ''
-            } w-100`"
-            @click="data.isSecured = false"
-          >
-            <div class="d-flex align-items-center">
-              <b-avatar
-                variant="light-primary"
-                icon="unlock-fill"
-                class="mr-2"
-              ></b-avatar
-              >No its open to acces without password
-            </div>
-          </div>
         </div>
+
         <div
           v-if="data.isSecured != null && !testRunning && testResult == null"
         >
