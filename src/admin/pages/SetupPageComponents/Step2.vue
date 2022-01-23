@@ -16,7 +16,7 @@
             <h5>Security</h5>
           </div>
           <span class="text-muted"
-            >Please select the option that maches your MQTT Broker</span
+            >Please select the option that matches your MQTT Broker</span
           >
           <div class="d-flex align-items-center justify-content-between">
             <div

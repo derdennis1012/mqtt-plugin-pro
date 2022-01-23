@@ -1,4 +1,4 @@
-<?php 
+<?php  
 /*
 Plugin Name: MQTT Plugin Pro
 Plugin URI: https://hs-furtwangen.de/
@@ -214,11 +214,11 @@ final class MQTT_Plugin_Pro {
 
     function cleandatabase() {
         write_log( "Cleaning Database!" );
-        $ttl =  get_option( 'mqtt_pro_mqtt_ttl', "" );
+        $ttl =  get_option( 'mqtt_pro_mqtt_ttl', false );
         if($ttl != ""){
             $ttl_int=(int)$ttl;
             $table_name = $this->wpdb->prefix . "mqtt_pro_data";
-            $sql = "DELETE FROM `".$table_name."` WHERE(SELECT * FROM `".$table_name."` WHERE RecordCreated < DATE_SUB(DATE(now()), INTERVAL '".$ttl_int."' DAY));";
+            $sql = "DELETE FROM `".$table_name."` WHERE(SELECT * FROM `".$table_name."` WHERE CAST(RecordCreated AS DATE) < DATE_SUB(DATE(now()), INTERVAL ".$ttl_int." DAY));";
             $this->wpdb->query($sql);
         }
         return;
