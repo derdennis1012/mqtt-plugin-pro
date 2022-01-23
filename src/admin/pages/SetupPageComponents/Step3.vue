@@ -12,16 +12,25 @@
       <validation-observer ref="simpleRules">
         <div>
           <h5>List of Topics:</h5>
+          <h6 class="text-muted">
+            Examples are <b>sensor-value-1</b> or subtobic
+            <b>sensors/pool/value</b>
+          </h6>
           <b-row>
             <b-col sm="9">
               <b-form-group>
                 <validation-provider
-                  rules="required|regex:^\S*[^\/\s]$">
+                  rules="required|regex:^\S*[^\/\s]$"
+                  #default="{ errors }"
+                  name="Topic"
+                >
                   <b-form-input
                     v-model="text"
                     placeholder="Add topic"
                     @keyup.enter="addItem"
+                    :state="errors.length > 0 ? false : null"
                   />
+                  <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-form-group>
             </b-col>
@@ -64,7 +73,6 @@
   </div>
 </template>
 <script>
-
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 export default {
@@ -86,12 +94,18 @@ export default {
     };
   },
   methods: {
-    addItem() {
+    async addItem() {
       var self = this;
+
       if (self.text == "") alert("Topic can not be empty!");
       else {
-        self.data.topics.push(self.text);
-        self.text = "";
+        var res = await this.$refs.simpleRules.validate();
+        if (res) {
+          self.data.topics.push(self.text);
+          self.text = "";
+        } else {
+          alert("Bist deppert");
+        }
       }
     },
     deleteItem(idx) {
