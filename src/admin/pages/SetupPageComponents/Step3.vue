@@ -20,7 +20,7 @@
             <b-col sm="9">
               <b-form-group>
                 <validation-provider
-                  rules="required|regex:^\S*[^\/\s]$"
+                  rules="required|regex:^\S*[^\/\s^,]$"
                   #default="{ errors }"
                   name="Topic"
                 >
