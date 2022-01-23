@@ -16,7 +16,7 @@
             <b-col sm="9">
               <b-form-group>
                 <validation-provider
-                  rules="required|regex:^\S*[^\/\s]$">
+                  rules="required|regex:^\S*[^\/\s^,]$">
                   <b-form-input
                     v-model="text"
                     placeholder="Add topic"
