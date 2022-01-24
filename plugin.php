@@ -39,6 +39,8 @@ Domain Path: /languages
  */
 
 //Add a utility function to handle logs more nicely.
+require_once(dirname( __FILE__ ).'/includes/vendor/woocommerce/action-scheduler/action-scheduler.php');
+
 if ( ! function_exists('write_log')) {
     function write_log ( $log )  {
         if ( is_array( $log ) || is_object( $log ) ) {
@@ -151,9 +153,13 @@ final class MQTT_Plugin_Pro {
 
         global $wpdb;
         $this->wpdb = $wpdb;
+        global $action_scheduler;
+
+
 
         $this->define_constants();
     
+        add_action( 'one_time_action_asap', 'one_time_function_asap' );
 
         register_activation_hook( __FILE__, array( $this, 'activate' ),array( $this, 'activate' ) );
         register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
@@ -169,9 +175,24 @@ final class MQTT_Plugin_Pro {
         add_action( 'woocsp_cron_delivery', array( $this, 'scheduleTriggered') );
         add_action( 'wp_clean_database', array( $this, 'cleandatabase') );
 
+        add_action( 'eg_midnight_log', array( $this,'eg_log_action_data') );
+
+      
+       
     }
 
-
+    public function eg_schedule_midnight_log() {
+        write_log( "Was willsch du?1" );
+        
+        if ( false === as_has_scheduled_action( 'eg_midnight_log' ) ) {
+            as_schedule_recurring_action( current_time( 'timestamp' ), 60, 'eg_midnight_log' );
+        }
+    }
+    function eg_log_action_data() {
+        write_log( "Bin da, wer noch?" );
+        return;
+    }
+ 
 
 //Add cron schedules filter with upper defined schedule.
 
@@ -272,6 +293,16 @@ final class MQTT_Plugin_Pro {
         {
             $MQTTFN->mqtt_subscribe($value);
             write_log( "DONE MQTT: ".$value );
+            $url = 'http://localhost:8888/wp/';
+
+//Use file_get_contents to GET the URL in question.
+$contents = file_get_contents($url);
+
+//If $contents is not a boolean FALSE value.
+if($contents !== false){
+    //Print out the contents.
+   write_log($contents);
+}
         }
     }
 
@@ -386,6 +417,9 @@ final class MQTT_Plugin_Pro {
 
         require_once MQTTPLUGINPRO_INCLUDES . '/Api.php';
         require_once MQTTPLUGINPRO_INCLUDES . '/MQTTBackendFunctions.php';
+        //$action_scheduler = 
+        //require_once MQTTPLUGINPRO_INCLUDES . '/vendor/autoload.php';
+        //as_enqueue_async_action( 'one_time_action_asap' );
 
     }
 
@@ -397,6 +431,8 @@ final class MQTT_Plugin_Pro {
     public function init_hooks() {
 
         add_action( 'init', array( $this, 'init_classes' ) );
+        add_action( 'init', array( $this, 'eg_schedule_midnight_log') );
+
 
         // Localize our plugin
         add_action( 'init', array( $this, 'localization_setup' ) );

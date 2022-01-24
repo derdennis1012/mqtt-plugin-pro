@@ -106,6 +106,9 @@ export default {
     self.found = fElment;
     if (!self.found.icon) self.found.icon = "poo";
     await self.getLatest();
+    setInterval(async () => {
+      await self.getLatest();
+    }, 5000);
   },
 };
 </script>

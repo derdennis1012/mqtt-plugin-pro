@@ -517,6 +517,4 @@ export default {
     self.$confetti.stop();
   },
 };
-
-[{ label: "1 Minute", code: "1min" }, {}];
 </script>
