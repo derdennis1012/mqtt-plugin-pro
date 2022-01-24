@@ -50,7 +50,7 @@
           v-if="settingsData.isSecured != null && !testRunning && testResult == null"
         >
           <div class="d-flex align-items-center justify-content-between mt-1">
-            <h5>The Broker</h5>
+            <h5>Broker Settings</h5>
             <b-form-checkbox
               checked="true"
               name="check-button"
@@ -67,7 +67,8 @@
               <b-form>
                 <b-row>
                   <b-col :md="`${settingsData.isCustomPort ? 9 : 12}`">
-                    <b-form-group label="MQTT Broker URL">
+                    <h5>MQTT Broker URL</h5>
+                    <b-form-group>
                       <validation-provider
                         #default="{ errors }"
                         name="URL/IP"
@@ -85,7 +86,8 @@
                     </b-form-group>
                   </b-col>
                   <b-col md="3" v-if="settingsData.isCustomPort">
-                    <b-form-group label="Port">
+                    <h5>Port</h5>
+                    <b-form-group>
                       <validation-provider
                         #default="{ errors }"
                         name="URL/IP"
@@ -108,8 +110,9 @@
             <div v-if="settingsData.isSecured == true">
               <b-form>
                 <b-row>
-                  <b-col md="6">
-                    <b-form-group label="Username:">
+                  <b-col>
+                     <h5>Username</h5>
+                    <b-form-group >
                       <validation-provider
                         #default="{ errors }"
                         name="Username"
@@ -125,8 +128,9 @@
                       </validation-provider>
                     </b-form-group>
                   </b-col>
-                  <b-col md="6">
-                    <b-form-group label="Password:">
+                  <b-col>
+                    <h5>Password</h5>
+                    <b-form-group>
                       <validation-provider
                         #default="{ errors }"
                         name="Password"
@@ -146,10 +150,12 @@
                 </b-row>
               </b-form>
             </div>
+            
             <div>
               <b-row>
-                <b-col md="9">
-                  <b-form-group label="ClientID:">
+                <b-col>
+                  <b-form-group>
+                    <h5>Client ID</h5>
                     <validation-provider
                       #default="{ errors }"
                       name="ClientID"
@@ -176,15 +182,11 @@
               </b-row>
             </div>
 
-
-
-
-
+            <h5>MQTT Topics</h5>
             <div>
               <b-row>
                 <b-col>
                   <b-form-group
-                    label="MQTT Topics:"
                     v-b-tooltip.hover.right
                     title="Format: sensor_1,sensor_2,..."
                   >
@@ -207,56 +209,76 @@
             </div>
 
             <div>
-              <b-row> 
-                <b-col>
-                  <b-form-group
-                    label="MQTT Intervall:"
-                    v-b-tooltip.hover.right
-                    title="Must be a natural number > 0"
-                  >
-                    <validation-provider
-                      #default="{ errors }"
-                      rules="required|integer|positive"
-                      name="Intervall"
-                    >
-                      <b-form-input
-                        @input="checkForm()"
-                        v-model="settingsData.mqtt_pro_mqtt_interval"
-                        :state="errors.length > 0 ? false : null"
-                        placeholder="Interval to wait for the MQTT values (in seconds)"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-             </div>
-             
-            <div>
-              <b-row>
-                <b-col>
-                  <b-form-group
-                    label="MQTT Time To Live:"
-                    v-b-tooltip.hover.right
-                    title="Must be a natural number > 0"
-                  >
-                    <validation-provider
-                      #default="{ errors }"
-                      rules="required|integer|positive"
-                      name="TTL"
-                    >
-                      <b-form-input
-                        @input="checkForm()"
-                        v-model="settingsData.mqtt_pro_mqtt_ttl"
-                        :state="errors.length > 0 ? false : null"
-                        placeholder="How long the MQTT values are stored (in days)"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
-                </b-col>
-              </b-row>
+              <h5>Interval</h5>
+              <b-form-group>
+                <validation-provider
+                  #default="{ errors }"
+                  name="Interval"
+                  rules="required"
+                >
+                  <v-select
+                    :options="timeIntervals"
+                    v-model="settingsData.mqtt_pro_mqtt_interval"
+                    :reduce="(item) => item.key"
+                    @option:selected="checkForm()"
+                    @input="checkForm()"
+                    :state="errors.length > 0 ? false : null"
+                    placeholder="Interval"
+                    :clearable="false"
+                  ></v-select>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
             </div>
+           
+          <h5>TTL - time to live</h5>
+          <div>
+            <div
+              :class="`shadow-sm p-3 bg-white  border-secondary  rounded-lg border-card m-2 ${
+                settingsData.keepData ? 'border-primary border-card-lg' : ''
+              } w-100`"
+              @click="changeTTL(true)"
+            >
+              <div class="d-flex align-items-center">
+                <b-avatar variant="light-primary" class="mr-2">
+                  <font-awesome-icon :icon="['fad', 'database']" /></b-avatar
+                >Keep my Data forever
+              </div>
+            </div>
+            <div
+              :class="`shadow-sm p-3 bg-white rounded-lg border-card m-2  border-secondary ${
+                settingsData.keepData === false ? 'border-primary border-card-lg' : ''
+              } w-100`"
+              @click="changeTTL(false)"
+            >
+              <div class="d-flex align-items-center">
+                <b-avatar variant="light-primary" class="mr-2">
+                  <font-awesome-icon :icon="['fad', 'trash']" /></b-avatar
+                >Automatically delete my Data
+              </div>
+            </div>
+          </div>
+          <b-form-group
+            label="TTL (days)"
+            class="mt-2"
+            v-if="settingsData.keepData === false"
+          >
+            <validation-provider
+              #default="{ errors }"
+              name="Interval"
+              rules="required"
+            >
+              <b-form-input
+                @input="checkForm()"
+                v-model="settingsData.mqtt_pro_mqtt_ttl"
+                label="Test"
+                :state="errors.length > 0 ? false : null"
+                placeholder="TTL (days)"
+              />
+              <small class="text-danger">{{ errors[0] }}</small>
+            </validation-provider>
+          </b-form-group>
+        </div>
             <b-button
               variant="success"
               @click="checkMQTTConnection"
@@ -267,14 +289,9 @@
             >
           </div>
           
-            
-        
-
+          <!--Innerhalb des Kasten-->
+          </validation-observer>
       
-
-            <!--Innerhalb des Kasten-->
-          
-        </div>
         <div v-if="testRunning" class="">
           <div class="shadow-lg bg-white px-3 pt-3 pb-1">
             <h4 class="text-center">Checking connection</h4>
@@ -319,25 +336,13 @@
           @click="retryConnection"
         >
           {{ !testResult ? "Plugged back in? - " : "" }} Retry
-        </b-button>
-      
-  
-
-          
-
-          
-
-         
-          
-        </validation-observer>
+        </b-button>        
       </div>  
       
-      
-      
-      <div>
+      <!--div>
         <b-card-group deck>
           <b-card
-            v-if="inputPassed == true && !connected"
+            v-if="inputPassed"
             bg-variant="secondary"
             text-variant="white"
             class="text-center"
@@ -384,17 +389,18 @@
           </b-card>
         </b-card-group>
 
-      </div>
+      </div-->
 
       <b-button
             variant="primary"
             type="submit"
             block
             @click.prevent="checkForm"
-            :disabled="!inputPassed && (connected==null || !connected)"
+            :disabled="!inputPassed || !connected"
           >
             Save Settings
           </b-button>
+          
     </div>
 </template>
 
@@ -420,12 +426,13 @@ export default {
   data() {
     return {
       elements: elmnts,
+      dataObj: {},
       settingsData: {
         testPassed: false,
         customPort: false,
-        inputPassed: false,
+        
         isSecured: false,
-        found: null,
+        keepData: true,
       },
       required,
       url,
@@ -433,11 +440,13 @@ export default {
       integer,
       positive,
       regex,
-      connected: null,
+      connected: false,
 
+      inputPassed: false,
       testRunning: false,
       testResult: null,
       renderComponent: false,
+      found: null,
     };
   },
 
@@ -489,10 +498,6 @@ export default {
       fetch("https://jsonplaceholder.typicode.com/posts", requestOptions)
         .then((response) => response.json())
         .then((data) => console.log(data));
-
-      /*enable Save Settings Button*/
-
-      this.connected = true;
     },
     
     forceRerender() {
@@ -547,26 +552,6 @@ export default {
       }
       self.testRunning = false;
     },
-    /*
-    async checkForm() {
-
-      //Wenn mqtt_port != 1883 dann customPort = true
-      if(this.mqtt_pro_mqtt_port != 1883){
-        this.customPort = true;
-      }
-      var self = this;
-      var res = false;
-      console.log("test");
-      try {
-        res = await self.$refs.simpleRules.validate();
-      } catch (e) {
-        console.log(e);
-        res = false;
-      }
-      self.$set(this, "inputPassed", res);
-      return res;
-    },
-  */
     async checkForm() {
       var self = this;
       var res = false;
@@ -579,7 +564,20 @@ export default {
       if (!this.settingsData.mqtt_pro_mqtt_url) res = false; // Fix nach PLP
       self.settingsData.testPassed = res;
       self.$set(this, "inputPassed", res);
+      //return res;
+
+      res = true;
+      if (!self.settingsData.mqtt_pro_mqtt_interval) res = false;
+      if (!self.settingsData.mqtt_pro_mqtt_ttl && !self.settingsData.keepData) res = false;
+      self.$set(self.settingsData, "testPassed", res);
       return res;
+
+
+    },
+    changeTTL(val) {
+      this.settingsData.keepData = val;
+      this.checkForm();
+      this.checkForm();
     },
     forceRerender() {
       // Remove my-component from the DOM
