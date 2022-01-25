@@ -402,7 +402,7 @@
       type="submit"
       block
       @click.prevent="checkForm"
-      :disabled="!inputPassed || !connected"
+      :disabled="!inputPassed"
     >
       Save Settings
     </b-button>
@@ -445,7 +445,7 @@ export default {
       integer,
       positive,
       regex,
-      connected: false,
+      //connected: false,
 
       inputPassed: false,
       testRunning: false,
