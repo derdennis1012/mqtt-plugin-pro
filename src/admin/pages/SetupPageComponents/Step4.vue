@@ -84,6 +84,7 @@
                 label="Test"
                 :state="errors.length > 0 ? false : null"
                 placeholder="TTL (days)"
+                type="number"
               />
               <small class="text-danger">{{ errors[0] }}</small>
             </validation-provider>
