@@ -27,6 +27,8 @@ class Admin {
             $submenu[ $slug ][] = array( __( 'App', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/' );
             $submenu[ $slug ][] = array( __( 'Settings', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/settings' );
             $submenu[ $slug ][] = array( __( 'Setup', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/setup' );
+            $submenu[ $slug ][] = array( __( 'About', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/about' );
+            $submenu[ $slug ][] = array( __( 'API Doc', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/api-docs' );
 
         }
 
