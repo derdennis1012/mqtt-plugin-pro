@@ -272,7 +272,7 @@
               <validation-provider
                 #default="{ errors }"
                 name="Interval"
-                rules="required"
+                rules="required|number"
               >
                 <b-form-input
                   @input="checkForm()"
