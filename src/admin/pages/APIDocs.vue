@@ -309,6 +309,12 @@ export default {
     this.swaggerSpec.host = this.getSiteURLG()
       .replace("http://", "")
       .split("/")[0];
+    this.swaggerSpec.basePath = "/";
+    if (this.getSiteURLG().replace("http://", "").split("/")[1]) {
+      this.swaggerSpec.basePath +=
+        this.getSiteURLG().replace("http://", "").split("/")[1] + "/";
+    }
+    this.swaggerSpec.basePath += "wp-json/mqtt-plugin-pro/v1";
   },
   mounted() {
     SwaggerUI({
