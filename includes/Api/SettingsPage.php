@@ -68,6 +68,18 @@ class SettingsPage extends WP_REST_Controller {
         );
         register_rest_route(
             $this->namespace,
+            '/' . $this->rest_base . '/get/intervall',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_settings_data_intervall' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                    'args'                => $this->get_collection_params(),
+                ],
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
             '/' . $this->rest_base . '/check-table',
             [
                 [
@@ -299,6 +311,13 @@ class SettingsPage extends WP_REST_Controller {
             'mqtt_pro_has_ttl' => get_option( 'mqtt_pro_has_ttl', false ),
             'mqtt_pro_mqtt_ttl' => get_option( 'mqtt_pro_mqtt_ttl', "180" ),
             'mqtt_pro_active' => get_option( 'mqtt_pro_active', "false" ),
+        ];
+        $response = rest_ensure_response( $settingsData );
+        return $response;
+    }
+    public function get_settings_data_intervall( $request ) {
+        $settingsData = [
+            'mqtt_pro_mqtt_interval' => get_option( 'mqtt_pro_mqtt_interval', "30" ),
         ];
         $response = rest_ensure_response( $settingsData );
         return $response;
