@@ -104,7 +104,7 @@ export default {
           self.data.topics.push(self.text);
           self.text = "";
         } else {
-          alert("Bist deppert");
+          alert("Wrong Topic format, please try again!");
         }
       }
     },
