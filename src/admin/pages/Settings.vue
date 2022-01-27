@@ -50,9 +50,7 @@
 
         <div
           v-if="
-            settingsData.isSecured != null && !testRunning && testResult == null
-          "
-        >
+            settingsData.isSecured != null && !testRunning && testResult == null">
           <div class="d-flex align-items-center justify-content-between mt-1">
             <h5>Broker Settings</h5>
             <b-form-checkbox
@@ -99,7 +97,7 @@
                       >
                         <b-form-input
                           @input="checkForm()"
-                          v-model="settingsData.mqtt_pro_mqtt_url"
+                          v-model="settingsData.mqtt_pro_mqtt_port"
                           type="number"
                           :state="errors.length > 0 ? false : null"
                           placeholder="Port"
@@ -192,11 +190,11 @@
                 <b-col>
                   <b-form-group
                     v-b-tooltip.hover.right
-                    title="Format: sensor_1,sensor_2,..."
+                    title="Format: sensor_1,sensor_2, or for sutopics test/subtopic"
                   >
                     <validation-provider
                       #default="{ errors }"
-                      rules="required|regex:^(.*[^\/\s])$"
+                      rules="required|regex:^\S*[^\/\s]$"
                       name="Topics"
                     >
                       <b-form-input
@@ -272,11 +270,12 @@
               <validation-provider
                 #default="{ errors }"
                 name="Interval"
-                rules="required|number"
+                rules="required"
               >
                 <b-form-input
                   @input="checkForm()"
-                  v-model="settingsData.mqtt_pro_mqtt_ttl"
+                  v-model="settingsData.mqtt_pro_mqtt_ttl" 
+                  type="number"
                   label="Test"
                   :state="errors.length > 0 ? false : null"
                   placeholder="TTL (days)"
@@ -287,7 +286,7 @@
           </div>
           <b-button
             variant="success"
-            @click="checkMQTTConnection"
+            @click="saveSetings"
             :disabled="!inputPassed"
             block
             class="mt-1 mb-1"
@@ -401,7 +400,7 @@
       variant="primary"
       type="submit"
       block
-      @click.prevent="checkForm"
+      @click.prevent="sendSettingsToServer"
       :disabled="!inputPassed"
     >
       Save Settings
@@ -428,16 +427,35 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
+  /*
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
+  */
   data() {
     return {
       elements: elmnts,
       dataObj: {},
+      settingsObj: null,
       settingsData: {
         testPassed: false,
         customPort: false,
-
         isSecured: false,
         keepData: true,
+        
+        /*
+        mqtt_pro_mqtt_url,
+        mqtt_pro_mqtt_port,
+        mqtt_pro_mqtt_client_id,
+        mqtt_pro_mqtt_user,
+        mqtt_pro_mqtt_password,
+        mqtt_pro_requires_auth,
+        mqtt_pro_mqtt_interval,
+        mqtt_pro_mqtt_ttl,
+        */
       },
       required,
       url,
@@ -452,10 +470,80 @@ export default {
       testResult: null,
       renderComponent: false,
       found: null,
+      
+      finished: null,
+      checkRunning: false,
+      
     };
   },
 
   methods: {
+    async timeout(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    //Get mqtt values:
+    getMQTTData() {
+
+    },
+
+    //Set mqtt values:
+    async saveSetings() {
+      var self = this;
+      self.checkRunning = true;
+      
+      try {
+        var res = await self.checkSettings();
+      } catch (e) {
+        console.log(e);
+      }
+      
+      await self.timeout(800);
+      if (res) {
+        self.checkRunning = false;
+        self.finished = true;
+        //self.showConfetti();
+      } else {
+        self.checkRunning = false;
+        self.finished = false;
+      }
+    },
+    async sendSettingsToServer() {
+      var self = this;
+      var settingsobj = await self.convertToSettingsObj();
+      console.log(settingsobj);
+      
+      const res = await self.sendPostReqG(
+        "/wp-json/mqtt-plugin-pro/v1/settings",
+        settingsobj
+      );
+      await this.timeout(2000);
+      console.log(res);
+
+      if (res) return true;
+      else return false;
+    },
+    async convertToSettingsObj(){
+      var settingsObj = {
+        mqtt_pro_mqtt_url: this.mqtt_pro_mqtt_url,
+        mqtt_pro_mqtt_port: this.mqtt_pro_mqtt_port,
+        mqtt_pro_mqtt_client_id: this.mqtt_pro_mqtt_client_id,
+        mqtt_pro_requires_auth: this.mqtt_pro_requires_auth,
+        mqtt_pro_mqtt_user: this.mqtt_pro_mqtt_user,
+        mqtt_pro_mqtt_password: this.mqtt_pro_mqtt_password,
+        mqtt_pro_mqtt_topics: this.mqtt_pro_mqtt_topics,
+        mqtt_pro_mqtt_interval: this.mqtt_pro_mqtt_interval,
+        mqtt_pro_has_ttl: this.mqtt_pro_has_ttl,
+        mqtt_pro_mqtt_ttl: this.mqtt_pro_mqtt_ttl,
+        mqtt_pro_active: this.mqtt_pro_active,
+      }
+
+      this.settingsObj=settingsObj;
+      return settingsObj;
+    },
+    async checkSettings() {
+      return true;
+    },
+
     retryConnection() {
       var self = this;
       self.settingsData.testPassed = false;
@@ -469,7 +557,6 @@ export default {
 
     /*ToDo: aktuellen Status erhalten */
     getStatus() {},
-
     async generateID() {
       var self = this;
       var first = [
@@ -493,6 +580,7 @@ export default {
     getRandomInt(max) {
       return Math.floor(Math.random() * max);
     },
+    /*
     async checkMQTTConnection() {
       var self = this;
       const requestOptions = {
@@ -504,7 +592,7 @@ export default {
         .then((response) => response.json())
         .then((data) => console.log(data));
     },
-
+    */
     forceRerender() {
       // Remove my-component from the DOM
       this.renderComponent = false;
@@ -514,21 +602,32 @@ export default {
         this.renderComponent = true;
       });
     },
+    async checkConncection() {
+      var self = this;
+      var settingsOBJ = await self.convertToSettingsObj();
+
+      var res = await self.sendPostReqG(
+        "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/test-connection-without",
+        settingsOBJ
+      );
+      await this.timeout(1000);
+      console.log(res);
+
+      if (res.connected) return true;
+      else return false;
+    },
     async checkMQTTConnection() {
       var self = this;
       self.testRunning = true;
       var settingsData = {
         mqtt_pro_mqtt_url: self.settingsData.mqtt_pro_mqtt_url,
-        mqtt_pro_mqtt_port: `${
-          !isNaN(self.settingsData.mqtt_pro_mqtt_url)
-            ? self.settingsData.mqtt_pro_mqtt_port
-            : 1883
-        }`,
+        mqtt_pro_mqtt_port: `${!isNaN(self.settingsData.mqtt_pro_mqtt_port) ? self.settingsData.mqtt_pro_mqtt_port : 1883}`,
         mqtt_pro_mqtt_client_id: self.settingsData.mqtt_pro_mqtt_client_id,
         mqtt_pro_mqtt_user: self.settingsData.mqtt_pro_mqtt_user,
         mqtt_pro_mqtt_password: self.settingsData.mqtt_pro_mqtt_password,
         mqtt_pro_requires_auth: "" + self.settingsData.isSecured,
       };
+
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -573,14 +672,15 @@ export default {
       if (!this.settingsData.mqtt_pro_mqtt_url) res = false; // Fix nach PLP
       self.settingsData.testPassed = res;
       self.$set(this, "inputPassed", res);
-      //return res;
-
+      return res;
+      /*
       res = true;
       if (!self.settingsData.mqtt_pro_mqtt_interval) res = false;
       if (!self.settingsData.mqtt_pro_mqtt_ttl && !self.settingsData.keepData)
         res = false;
       self.$set(self.settingsData, "testPassed", res);
       return res;
+      */
     },
     changeTTL(val) {
       this.settingsData.keepData = val;
@@ -597,6 +697,7 @@ export default {
       });
     },
   },
+  
 
   created() {
     var self = this;
