@@ -537,7 +537,7 @@ export default {
         mqtt_pro_active: this.mqtt_pro_active,
       }
 
-      //this.settingsObj=settingsObj;
+      this.settingsObj=settingsObj;
       return settingsObj;
     },
     async checkSettings() {

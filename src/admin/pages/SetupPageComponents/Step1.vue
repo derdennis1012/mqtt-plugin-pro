@@ -7,46 +7,16 @@
     </h1>
     <div class="scroll-y overflow-auto">
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce leo
-        ligula, placerat id posuere sed, pharetra at urna. Phasellus at sem quis
-        magna tincidunt blandit. Donec porta lectus a nunc mattis tristique.
-        Proin commodo condimentum dolor ut commodo. Praesent viverra lacinia
-        mollis. Proin facilisis faucibus massa sed varius. Curabitur pharetra
-        volutpat venenatis. Vestibulum aliquet vitae lacus ac pretium.
-        Vestibulum id auctor lacus, eget ornare felis.
+        By accepting these General Terms during your account registration or subscription process, 
+        or by accessing or using our Offerings, 
+        you confirm your acceptance of these General Terms and other applicable Terms and your agreement to be a party to this binding contract. 
+        If you do not agree, you do not have the right to access or use our Offerings.
       </p>
       <p>
-        Duis nec ultricies lacus, quis elementum ante. Aenean congue, diam non
-        commodo suscipit, dui purus vehicula ante, at convallis risus urna quis
-        dolor. Nam leo arcu, feugiat nec nulla ac, gravida lacinia tortor.
-        Mauris euismod, libero in pharetra condimentum, ipsum eros consectetur
-        quam, non laoreet magna quam ac augue. Fusce maximus interdum urna sed
-        vestibulum. Duis at varius arcu, sed luctus augue. Pellentesque
-        placerat, sapien id sagittis ultricies, purus nunc tempus nulla, non
-        rutrum massa augue sed risus. Praesent diam nisi, suscipit in dolor nec,
-        congue vehicula tellus. Maecenas nec tellus eget ex facilisis porttitor.
-        Ut viverra orci in ultrices aliquam.
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce leo
-        ligula, placerat id posuere sed, pharetra at urna. Phasellus at sem quis
-        magna tincidunt blandit. Donec porta lectus a nunc mattis tristique.
-        Proin commodo condimentum dolor ut commodo. Praesent viverra lacinia
-        mollis. Proin facilisis faucibus massa sed varius. Curabitur pharetra
-        volutpat venenatis. Vestibulum aliquet vitae lacus ac pretium.
-        Vestibulum id auctor lacus, eget ornare felis.
-      </p>
-      <p>
-        Duis nec ultricies lacus, quis elementum ante. Aenean congue, diam non
-        commodo suscipit, dui purus vehicula ante, at convallis risus urna quis
-        dolor. Nam leo arcu, feugiat nec nulla ac, gravida lacinia tortor.
-        Mauris euismod, libero in pharetra condimentum, ipsum eros consectetur
-        quam, non laoreet magna quam ac augue. Fusce maximus interdum urna sed
-        vestibulum. Duis at varius arcu, sed luctus augue. Pellentesque
-        placerat, sapien id sagittis ultricies, purus nunc tempus nulla, non
-        rutrum massa augue sed risus. Praesent diam nisi, suscipit in dolor nec,
-        congue vehicula tellus. Maecenas nec tellus eget ex facilisis porttitor.
-        Ut viverra orci in ultrices aliquam.
+        You agree to these Terms on behalf of the company or other legal entity for which you are acting (for example, as an employee or contractor) or, 
+        if there is no company or legal entity, on behalf of yourself as an individual (in either case, “You”). 
+        You represent and warrant that you have the right and authority (as well as the capacity—for example, 
+        you are of sufficient legal age) to act on behalf of and bind such entity (if any) and yourself.
       </p>
     </div>
     <div>
