@@ -8,7 +8,7 @@
     >
       <div
         class="d-flex align-items-top justify-content-between"
-        v-if="latestValue"
+        v-if="timeDiffMin && latestValue"
       >
         <div>
           <h1 class="mb-0 pb-0 value-text">
