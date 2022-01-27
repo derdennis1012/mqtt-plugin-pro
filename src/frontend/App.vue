@@ -16,13 +16,20 @@
             }}<b class="ml-2 suffix-text">{{ found.suffix }}</b>
           </h1>
           <div class="text-muted">
-            <b-badge :variant="`${diff > 5 ? 'danger' : 'success'}`">{{
-              `${
+            <b-badge
+              :variant="`${
                 diff > timeIntervalsKeyG[intervall].minutes * 2
-                  ? "OFFLINE"
-                  : "ONLINE"
-              }`
-            }}</b-badge>
+                  ? 'danger'
+                  : 'success'
+              }`"
+              >{{
+                `${
+                  diff > timeIntervalsKeyG[intervall].minutes * 2
+                    ? "OFFLINE"
+                    : "ONLINE"
+                }`
+              }}</b-badge
+            >
             <span class="text-muted">
               Last value
               {{
