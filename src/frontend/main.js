@@ -23,6 +23,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import moment from "moment";
+import { globalMixin } from "./globalMixin";
 
 var elements = document.querySelectorAll("[data-pk-atts]");
 var instances = [];
@@ -33,6 +34,7 @@ for (var i = 0; i < elements.length; i++) {
   instances.push(clss);
 }
 
+
 for (var i = 0; i < instances.length; i++) {
   // Make BootstrapVue available throughout your project
   Vue.use(BootstrapVue);
@@ -42,6 +44,7 @@ for (var i = 0; i < instances.length; i++) {
   Vue.config.productionTip = false;
 
   Vue.prototype.moment = moment;
+
 
   console.log("#vue-frontend-app-" + instances[i]);
   /* eslint-disable no-new */

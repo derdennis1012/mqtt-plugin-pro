@@ -285,24 +285,12 @@ final class MQTT_Plugin_Pro {
         write_log( "GET MQTT" );
         $topics = get_option( 'mqtt_pro_mqtt_topics' );
         $topicsArr = explode(',', $topics);
-
         $MQTTFN = new APP\MQTTBackendFunctions();
-
-
         foreach($topicsArr as $key => $value) 
         {
             $MQTTFN->mqtt_subscribe($value);
             write_log( "DONE MQTT: ".$value );
             $url = 'http://localhost:8888/wp/';
-
-//Use file_get_contents to GET the URL in question.
-$contents = file_get_contents($url);
-
-//If $contents is not a boolean FALSE value.
-if($contents !== false){
-    //Print out the contents.
-   write_log($contents);
-}
         }
     }
 
@@ -348,8 +336,7 @@ if($contents !== false){
         if (get_option('my_plugin_do_activation_redirect_', false)) {
             delete_option('my_plugin_do_activation_redirect_');
             if(get_option( 'mqtt_pro_mqtt_url','' ) != ''){
-                exit( wp_redirect( admin_url( 'admin.php?page=mqtt-plugin-pro#/setup' ) ));
-
+                exit( wp_redirect( admin_url( 'admin.php?page=mqtt-plugin-pro#/about' ) ));
             }else{
                 exit;
             }

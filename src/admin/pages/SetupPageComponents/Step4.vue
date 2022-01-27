@@ -6,7 +6,7 @@
           <font-awesome-icon
             class="mr-3"
             :icon="['fal', 'chevron-left']" /></span
-        >4. Misc
+        >4. Additional
       </h1>
       <validation-observer ref="simpleRules">
         <div>

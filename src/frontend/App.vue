@@ -8,7 +8,7 @@
     >
       <div
         class="d-flex align-items-top justify-content-between"
-        v-if="latestValue"
+        v-if="timeDiffMin && latestValue"
       >
         <div>
           <h1 class="mb-0 pb-0 value-text">
@@ -16,11 +16,27 @@
             }}<b class="ml-2 suffix-text">{{ found.suffix }}</b>
           </h1>
           <div class="text-muted">
-            <b-badge :variant="`${diff > 5 ? 'danger' : 'success'}`">{{
-              `${diff > 5 ? "OFFLINE" : "ONLINE"}`
-            }}</b-badge>
+            <b-badge
+              :variant="`${
+                diff > timeIntervalsKeyG[intervall].minutes * 2
+                  ? 'danger'
+                  : 'success'
+              }`"
+              >{{
+                `${
+                  diff > timeIntervalsKeyG[intervall].minutes * 2
+                    ? "OFFLINE"
+                    : "ONLINE"
+                }`
+              }}</b-badge
+            >
             <span class="text-muted">
-              Last value {{ moment(latestValue.RecordCreated).fromNow() }}
+              Last value
+              {{
+                moment(latestValue.RecordCreated)
+                  .add(timeDiffMin, "minutes")
+                  .fromNow()
+              }}
             </span>
           </div>
         </div>
@@ -62,9 +78,77 @@ export default {
       diff: 0,
       latestValue: null,
       error: false,
+      serverTime: null,
+      timeDiffMin: null,
+      intervall: "1min",
+      timeIntervalsKeyG: {
+        "1min": {
+          minutes: 1,
+        },
+        "5min": {
+          minutes: 5,
+        },
+        "15min": {
+          minutes: 15,
+        },
+        "30min": {
+          minutes: 30,
+        },
+        "1h": {
+          minutes: 60,
+        },
+
+        "3h": {
+          minutes: 180,
+        },
+        "5h": {
+          minutes: 300,
+        },
+        "1d": {
+          minutes: 1440,
+        },
+        "3d": {
+          minutes: 4320,
+        },
+        "1w": {
+          minutes: 10080,
+        },
+      },
     };
   },
   methods: {
+    async getIntervall() {
+      var self = this;
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      };
+      const response = await fetch(
+        self.found.site_url +
+          "/wp-json/mqtt-plugin-pro/v1/settings/get/intervall",
+        requestOptions
+      );
+      const data = await response.json();
+      this.intervall = data.mqtt_pro_mqtt_interval;
+    },
+    async getTimeStamp() {
+      var self = this;
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      };
+      const response = await fetch(
+        self.found.site_url +
+          "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/get/timestamp",
+        requestOptions
+      );
+      const data = await response.json();
+      this.serverTime = data.Date;
+      var sT = new self.moment(this.serverTime);
+      var lT = new self.moment(new Date());
+      var dif = self.moment.duration(lT.diff(sT)).asMinutes();
+      this.timeDiffMin = dif;
+    },
     async getLatest() {
       var self = this;
       const requestOptions = {
@@ -83,7 +167,9 @@ export default {
         self.diff =
           self.moment
             .duration(
-              this.moment(self.latestValue.RecordCreated).diff(self.dateObj)
+              this.moment(self.latestValue.RecordCreated)
+                .add(self.timeDiffMin, "minutes")
+                .diff(self.dateObj)
             )
             .asMinutes()
             .toFixed(0) * -1;
@@ -105,9 +191,12 @@ export default {
     }
     self.found = fElment;
     if (!self.found.icon) self.found.icon = "poo";
+    await self.getIntervall();
     await self.getLatest();
+    await self.getTimeStamp();
     setInterval(async () => {
       await self.getLatest();
+      await self.getTimeStamp();
     }, 5000);
   },
 };
