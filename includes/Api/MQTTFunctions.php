@@ -50,6 +50,17 @@ class MQTTFunctions extends WP_REST_Controller {
         );
         register_rest_route(
             $this->namespace,
+            '/' . $this->rest_base .'/get/timestamp',
+            [
+                [
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_timestamp' ],
+                    'permission_callback' => [ $this, 'get_items_permissions_check' ],
+                ]
+            ]
+        );
+        register_rest_route(
+            $this->namespace,
             '/' . $this->rest_base .'/get',
             [
                 [
@@ -119,6 +130,17 @@ class MQTTFunctions extends WP_REST_Controller {
     public function get_all_mqtt_values( $request ){
         $sql = "SELECT * FROM wp_mqtt_pro_data ORDER BY RecordCreated DESC";
         $res = $this->wpdb->get_results($sql,ARRAY_A);
+        $respObj = [
+            'res'=>$res
+        ];
+        $response = rest_ensure_response(  $res  );
+
+        return $response;
+    }
+
+    public function get_timestamp( $request ){
+        $sql = "SELECT NOW() AS Date";
+        $res = $this->wpdb->get_row($sql);
         $respObj = [
             'res'=>$res
         ];

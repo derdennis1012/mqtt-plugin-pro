@@ -130,6 +130,23 @@ export default {
             },
           },
         },
+        "/mqtt-functions/get/timestamp": {
+          get: {
+            tags: ["MQTT Data"],
+            summary: "Get Server Time",
+            description: "",
+            operationId: "getTimeStamp",
+            produces: ["application/json"],
+            responses: {
+              200: {
+                description: "successful operation",
+              },
+              500: {
+                description: "Error",
+              },
+            },
+          },
+        },
         "/mqtt-functions/get/all": {
           get: {
             tags: ["MQTT Data"],

@@ -11,6 +11,7 @@
         v-if="latestValue"
       >
         <div>
+          ##{{ serverTime }}##{{ timeDiffMin }}##{{ moment(new Date()) }}
           <h1 class="mb-0 pb-0 value-text">
             {{ parseFloat(latestValue.DataSet).toFixed(2)
             }}<b class="ml-2 suffix-text">{{ found.suffix }}</b>
@@ -20,7 +21,12 @@
               `${diff > 5 ? "OFFLINE" : "ONLINE"}`
             }}</b-badge>
             <span class="text-muted">
-              Last value {{ moment(latestValue.RecordCreated).fromNow() }}
+              Last value
+              {{
+                moment(latestValue.RecordCreated)
+                  .add(timeDiffMin, "minutes")
+                  .fromNow()
+              }}
             </span>
           </div>
         </div>
@@ -62,9 +68,29 @@ export default {
       diff: 0,
       latestValue: null,
       error: false,
+      serverTime: null,
+      timeDiffMin: null,
     };
   },
   methods: {
+    async getTimeStamp() {
+      var self = this;
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      };
+      const response = await fetch(
+        self.found.site_url +
+          "/wp-json/mqtt-plugin-pro/v1/mqtt-functions/get/timestamp",
+        requestOptions
+      );
+      const data = await response.json();
+      this.serverTime = data.Date;
+      var sT = new self.moment(this.serverTime);
+      var lT = new self.moment(new Date());
+      var dif = self.moment.duration(lT.diff(sT)).asMinutes();
+      this.timeDiffMin = dif;
+    },
     async getLatest() {
       var self = this;
       const requestOptions = {
@@ -106,8 +132,10 @@ export default {
     self.found = fElment;
     if (!self.found.icon) self.found.icon = "poo";
     await self.getLatest();
+    await self.getTimeStamp();
     setInterval(async () => {
       await self.getLatest();
+      await self.getTimeStamp();
     }, 5000);
   },
 };
