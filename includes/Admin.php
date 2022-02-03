@@ -25,11 +25,12 @@ class Admin {
 
         if ( current_user_can( $capability ) ) {
             //Removed Settings & Table becuase it isn't finished!
+            //When settings need to be changed, please re-run setup progress!
             //$submenu[ $slug ][] = array( __( 'App', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/' );
             //$submenu[ $slug ][] = array( __( 'Settings', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/settings' );
             $submenu[ $slug ][] = array( __( 'Setup', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/setup' );
             $submenu[ $slug ][] = array( __( 'About', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/about' );
-            $submenu[ $slug ][] = array( __( 'API Doc', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/api-docs' );
+            $submenu[ $slug ][] = array( __( 'API Docs', 'textdomain' ), $capability, 'admin.php?page=' . $slug . '#/api-docs' );
 
         }
 
