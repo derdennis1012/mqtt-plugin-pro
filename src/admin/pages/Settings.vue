@@ -1,3 +1,4 @@
+<!-- Edited by Joshua Wehr -->
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <div>
@@ -50,7 +51,9 @@
 
         <div
           v-if="
-            settingsData.isSecured != null && !testRunning && testResult == null">
+            settingsData.isSecured != null && !testRunning && testResult == null
+          "
+        >
           <div class="d-flex align-items-center justify-content-between mt-1">
             <h5>Broker Settings</h5>
             <b-form-checkbox
@@ -274,7 +277,7 @@
               >
                 <b-form-input
                   @input="checkForm()"
-                  v-model="settingsData.mqtt_pro_mqtt_ttl" 
+                  v-model="settingsData.mqtt_pro_mqtt_ttl"
                   type="number"
                   label="Test"
                   :state="errors.length > 0 ? false : null"
@@ -445,7 +448,7 @@ export default {
         customPort: false,
         isSecured: false,
         keepData: true,
-        
+
         /*
         mqtt_pro_mqtt_url,
         mqtt_pro_mqtt_port,
@@ -470,10 +473,9 @@ export default {
       testResult: null,
       renderComponent: false,
       found: null,
-      
+
       finished: null,
       checkRunning: false,
-      
     };
   },
 
@@ -482,21 +484,19 @@ export default {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     //Get mqtt values:
-    getMQTTData() {
-
-    },
+    getMQTTData() {},
 
     //Set mqtt values:
     async saveSetings() {
       var self = this;
       self.checkRunning = true;
-      
+
       try {
         var res = await self.checkSettings();
       } catch (e) {
         console.log(e);
       }
-      
+
       await self.timeout(800);
       if (res) {
         self.checkRunning = false;
@@ -511,7 +511,7 @@ export default {
       var self = this;
       var settingsobj = await self.convertToSettingsObj();
       console.log(settingsobj);
-      
+
       const res = await self.sendPostReqG(
         "/wp-json/mqtt-plugin-pro/v1/settings",
         settingsobj
@@ -522,7 +522,7 @@ export default {
       if (res) return true;
       else return false;
     },
-    async convertToSettingsObj(){
+    async convertToSettingsObj() {
       var settingsObj = {
         mqtt_pro_mqtt_url: this.mqtt_pro_mqtt_url,
         mqtt_pro_mqtt_port: this.mqtt_pro_mqtt_port,
@@ -535,9 +535,9 @@ export default {
         mqtt_pro_has_ttl: this.mqtt_pro_has_ttl,
         mqtt_pro_mqtt_ttl: this.mqtt_pro_mqtt_ttl,
         mqtt_pro_active: this.mqtt_pro_active,
-      }
+      };
 
-      this.settingsObj=settingsObj;
+      this.settingsObj = settingsObj;
       return settingsObj;
     },
     async checkSettings() {
@@ -621,7 +621,11 @@ export default {
       self.testRunning = true;
       var settingsData = {
         mqtt_pro_mqtt_url: self.settingsData.mqtt_pro_mqtt_url,
-        mqtt_pro_mqtt_port: `${!isNaN(self.settingsData.mqtt_pro_mqtt_port) ? self.settingsData.mqtt_pro_mqtt_port : 1883}`,
+        mqtt_pro_mqtt_port: `${
+          !isNaN(self.settingsData.mqtt_pro_mqtt_port)
+            ? self.settingsData.mqtt_pro_mqtt_port
+            : 1883
+        }`,
         mqtt_pro_mqtt_client_id: self.settingsData.mqtt_pro_mqtt_client_id,
         mqtt_pro_mqtt_user: self.settingsData.mqtt_pro_mqtt_user,
         mqtt_pro_mqtt_password: self.settingsData.mqtt_pro_mqtt_password,
@@ -697,7 +701,6 @@ export default {
       });
     },
   },
-  
 
   created() {
     var self = this;

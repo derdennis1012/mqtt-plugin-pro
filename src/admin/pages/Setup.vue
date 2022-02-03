@@ -1,3 +1,4 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
   <div class="app-settings container h-100 fh">
     <div
@@ -66,7 +67,7 @@
           :class="`${step == 4 ? 'text-primary' : ''} ${
             step > 4 ? '' : 'text-muted'
           }`"
-          >4. Misc</span
+          >4. Additional</span
         >
       </div>
       <div class="setup-line"></div>

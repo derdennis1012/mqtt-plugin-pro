@@ -1,13 +1,6 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
-  <div
-    class="
-        d-flex
-        align-items-center
-        justify-content-between
-       
-        flex-column
-      "
-  >
+  <div class="d-flex align-items-center justify-content-between flex-column">
     <h1 class="text-center fat-heading mb-4 mt-4">Howdy my MQTT friend 👋</h1>
 
     <h3 class="text-center mt-4">

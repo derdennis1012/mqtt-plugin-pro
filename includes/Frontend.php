@@ -1,24 +1,16 @@
 <?php
+// Edited by Lena Scheit, Dennis Bölling
+
 namespace App;
 
-/**
- * Frontend Pages Handler
- */
+
 class Frontend {
 
     public function __construct() {
         add_shortcode( 'mqtt-pro', [ $this, 'render_frontend' ] );
     }
-
-    /**
-     * Render frontend app
-     *
-     * @param  array $atts
-     * @param  string $content
-     *
-     * @return string
-     */
     public function render_frontend( $atts, $content = '' ) {
+        //Extract the Shortcode attributes and pass it to the vue instance
       $topic =  $atts['topic'];
         if(isset($atts['type'])){
             $type = $atts['type'];

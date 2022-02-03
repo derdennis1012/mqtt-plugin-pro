@@ -12435,6 +12435,7 @@ input[type="color"].form-control:disabled {
 }
 
 
+/* Edited by Lena Scheit, Dennis Bölling */
 .border-card {
   border: 1px solid;
   align-self: stretch;

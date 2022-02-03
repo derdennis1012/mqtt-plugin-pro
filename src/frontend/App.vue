@@ -1,3 +1,5 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
+
 <template>
   <div class="">
     <div
@@ -197,6 +199,7 @@ export default {
     setInterval(async () => {
       await self.getLatest();
       await self.getTimeStamp();
+      self.$forceUpdate();
     }, 5000);
   },
 };

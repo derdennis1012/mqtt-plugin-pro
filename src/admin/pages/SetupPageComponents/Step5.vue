@@ -1,3 +1,4 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <div class="mt-4" v-if="loaded">

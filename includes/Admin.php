@@ -1,4 +1,6 @@
 <?php
+// Edited by Lena Scheit, Dennis Bölling
+
 namespace App;
 
 /**
@@ -11,9 +13,7 @@ class Admin {
     }
 
     /**
-     * Register our menu page
-     *
-     * @return void
+     * Register the Menu of the plugin
      */
     public function admin_menu() {
         global $submenu;
@@ -35,32 +35,20 @@ class Admin {
         add_action( 'load-' . $hook, [ $this, 'init_hooks'] );
     }
 
-    /**
-     * Initialize our hooks for the admin page
-     *
-     * @return void
-     */
+
     public function init_hooks() {
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
     }
 
-    /**
-     * Load scripts and styles for the app
-     *
-     * @return void
-     */
+
     public function enqueue_scripts() {
         wp_enqueue_style( 'mqttpluginpro-admin' );
         wp_enqueue_script( 'mqttpluginpro-admin' );
     }
 
-    /**
-     * Render our admin page
-     *
-     * @return void
-     */
     public function plugin_page() {
         $url = get_site_url();
+        //Pass the site url to the Vue instance
         $vue_atts = esc_attr( json_encode( [
             'site_url' => $url
         ] ) );
