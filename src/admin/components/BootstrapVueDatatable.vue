@@ -1,4 +1,6 @@
 <!-- Edited by Arif Hünerli -->
+<!-- Removed from menu ... didn't finished -->
+
 <template>
   <div class="container pt-3 pb-5">
     <h2>Datatable for MQTT Broker Values</h2>

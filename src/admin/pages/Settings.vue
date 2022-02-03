@@ -1,4 +1,5 @@
 <!-- Edited by Joshua Wehr -->
+<!-- Removed from menu ... didn't finished -->
 <template>
   <div class="d-flex flex-column justify-content-between h-100">
     <div>
