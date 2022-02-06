@@ -30,7 +30,7 @@
         v-model="data.acceptedTerms"
         name="checkbox-1"
       >
-        I accept the terms and use
+        I accept the terms of use
       </b-form-checkbox>
     </div>
     <b-button
