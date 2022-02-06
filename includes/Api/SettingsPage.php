@@ -131,13 +131,12 @@ class SettingsPage extends WP_REST_Controller {
     public function checkMQTTConnection(){
 
         $settingsData = [
-            'mqtt_pro_mqtt_url' => $request['mqtt_pro_mqtt_url'],
-            'mqtt_pro_mqtt_port' => $request['mqtt_pro_mqtt_port'],
-            'mqtt_pro_mqtt_client_id' =>  $request['mqtt_pro_mqtt_client_id'],
-            'mqtt_pro_mqtt_user' => $request['mqtt_pro_mqtt_user'],
-            'mqtt_pro_mqtt_password' => $request['mqtt_pro_mqtt_password'],
-            'mqtt_pro_requires_auth' => $request['mqtt_pro_requires_auth'],
-
+            'mqtt_pro_mqtt_url' => get_option( 'mqtt_pro_mqtt_url', "" ),
+            'mqtt_pro_mqtt_port' => get_option( 'mqtt_pro_mqtt_port', "1883" ),
+            'mqtt_pro_mqtt_client_id' => get_option( 'mqtt_pro_mqtt_client_id', "" ),
+            'mqtt_pro_mqtt_user' => get_option( 'mqtt_pro_mqtt_user', null ),
+            'mqtt_pro_mqtt_password' => get_option( 'mqtt_pro_mqtt_password', null ),
+            'mqtt_pro_requires_auth' => get_option( 'mqtt_pro_mqtt_topics', "false" ),
         ];
         $conncected = false;
             try{
