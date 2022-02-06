@@ -1,3 +1,4 @@
+// Edited by Lena Scheit, Dennis Bölling
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
@@ -25,6 +26,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue);
+
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
 
@@ -49,13 +51,10 @@ import vSelect from 'vue-select';
 Vue.component('v-select', vSelect);
 import 'vue-select/dist/vue-select.css';
 
-
-/* eslint-disable no-new */
 new Vue({
   el: "#vue-admin-app",
   router,
   render: (h) => h(App),
 });
 
-// fix the admin menu for the slug "mqtt-plugin-pro"
 menuFix("mqtt-plugin-pro");

@@ -1,4 +1,4 @@
-
+// Edited by Lena Scheit, Dennis Bölling
 var data ={}
 try{
   var elements = document.querySelectorAll("[data-pk-atts]");
@@ -6,7 +6,6 @@ var fElement = null;
 for (var i = 0; i < elements.length; i++) {
   var element = elements[i];
   var elmt = JSON.parse(element.getAttribute("data-pk-atts"));
-
   fElement = elmt;
 }
  data = { siteURLG: fElement.site_url };

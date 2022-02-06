@@ -1,3 +1,4 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
   <div class="container">
     <img :src="aboutIMG" width="100%" height="auto" />

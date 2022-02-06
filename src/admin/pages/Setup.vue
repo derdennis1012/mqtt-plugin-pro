@@ -1,3 +1,4 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
   <div class="app-settings container h-100 fh">
     <div
@@ -66,7 +67,7 @@
           :class="`${step == 4 ? 'text-primary' : ''} ${
             step > 4 ? '' : 'text-muted'
           }`"
-          >4. Misc</span
+          >4. Additional</span
         >
       </div>
       <div class="setup-line"></div>
@@ -117,16 +118,6 @@
     />
   </div>
 </template>
-<!--
-  @Vue-Bootsrap DOC
-  https://bootstrap-vue.org/docs
-
-  @BoostrapDoc
-  https://getbootstrap.com/docs/4.1/getting-started/introduction/
-
-  @Validation
-  https://vee-validate.logaretm.com/v4/
- -->
 <script>
 import Step0 from "./SetupPageComponents/Step0.vue";
 import Step1 from "./SetupPageComponents/Step1.vue";
@@ -177,15 +168,8 @@ export default {
       },
     };
   },
-  methods: {
-    checkConncetion() {},
-    saveData() {
-      console.log(this.settingsData);
-    },
-  },
-  created() {
-    console.log(this.getSiteURLG());
-  },
+  methods: {},
+  created() {},
 };
 </script>
 

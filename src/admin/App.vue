@@ -1,3 +1,4 @@
+<!-- Edited by Lena Scheit, Dennis Bölling  -->
 <template>
   <div id="vue-backend-app">
     <router-view />
@@ -7,9 +8,7 @@
 <script>
 export default {
   name: "App",
-  created() {
-    console.log(this.$parent);
-  },
+  created() {},
 };
 </script>
 

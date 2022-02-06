@@ -1,3 +1,4 @@
+// Edited by Lena Scheit, Joshua Wehr & Dennis Bölling
 import { extend, localize } from "vee-validate";
 import {
   required as rule_required,

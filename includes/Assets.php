@@ -1,13 +1,12 @@
 <?php
+// Edited by Lena Scheit, Dennis Bölling
+
 namespace App;
 
-/**
- * Scripts and Styles Class
- */
+//Register the generated JS & CSS scripts from VueJS
 class Assets {
 
     function __construct() {
-
         if ( is_admin() ) {
             add_action( 'admin_enqueue_scripts', [ $this, 'register' ], 5 );
         } else {
@@ -15,23 +14,11 @@ class Assets {
         }
     }
 
-    /**
-     * Register our app scripts and styles
-     *
-     * @return void
-     */
     public function register() {
         $this->register_scripts( $this->get_scripts() );
         $this->register_styles( $this->get_styles() );
     }
 
-    /**
-     * Register scripts
-     *
-     * @param  array $scripts
-     *
-     * @return void
-     */
     private function register_scripts( $scripts ) {
         foreach ( $scripts as $handle => $script ) {
             $deps      = isset( $script['deps'] ) ? $script['deps'] : false;
@@ -42,13 +29,6 @@ class Assets {
         }
     }
 
-    /**
-     * Register styles
-     *
-     * @param  array $styles
-     *
-     * @return void
-     */
     public function register_styles( $styles ) {
         foreach ( $styles as $handle => $style ) {
             $deps = isset( $style['deps'] ) ? $style['deps'] : false;
@@ -57,11 +37,6 @@ class Assets {
         }
     }
 
-    /**
-     * Get all registered scripts
-     *
-     * @return array
-     */
     public function get_scripts() {
         $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.min' : '';
 
@@ -93,11 +68,6 @@ class Assets {
         return $scripts;
     }
 
-    /**
-     * Get registered styles
-     *
-     * @return array
-     */
     public function get_styles() {
 
         $styles = [
